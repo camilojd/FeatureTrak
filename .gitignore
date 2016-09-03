@@ -87,3 +87,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Additional stuff beyond github's .gitignore
+bower_components/
