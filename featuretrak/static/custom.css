@@ -1,3 +1,27 @@
 body {
-    padding-top: 60px;
+    padding-top: 80px;
+}
+
+#features-client-public div.card {
+    background-color:#FFDDAD;
+}
+
+#features-client-public .card-header {
+    cursor: pointer;
+}
+
+#features-client-public .card .text-xs-right {
+    margin-bottom: 0;
+}
+
+#features-client-public .card-header {
+    padding: 5px 10px 5px 10px;
+}
+#features-client-public .card .card-block {
+    padding-top: 0.5rem;
+    padding-bottom: 0;
+}
+
+ul.ft-error-list {
+    margin-bottom:0;
 }

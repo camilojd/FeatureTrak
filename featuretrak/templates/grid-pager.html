@@ -1,0 +1,16 @@
+<div class="row">
+  <div style="text-align:right; line-height: 5em;" class="col-md-9 col-sm-8 col-xs-8">
+      Page:
+  </div>
+  <div class="col-md-3 col-sm-4 col-xs-4">
+    <nav>
+        <ul class="pagination">
+            <!-- ko foreach: ko.utils.range(0, maxPageIndex) -->
+                <li class="page-item" data-bind="css: { active: $data == $root.currentPageIndex() }">
+                  <a class="page-link" data-bind="text: $data + 1, click: function() { $root.currentPageIndex($data) }" href="#"></a>
+                </li>
+            <!-- /ko -->
+        </ul>
+    </nav>
+  </div>
+</div>
