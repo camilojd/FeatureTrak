@@ -1,11 +1,11 @@
-<div class="row">
+<div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
   <div class="col-xs-4">
     <div class="card">
       <img class="card-img-top w-100" src="https://robohash.org/{{random_string(20)}}">
       <div class="card-block">
         <h4 class="card-title">Manage Clients</h4>
         <p class="card-text">Several clients that currently use BriteCore products</p>
-        <a href="#" class="btn btn-primary">Access the CRUD UI</a>
+        <a data-bind="click:curPage.bind(curPage, 'adminClient')" href="#" class="btn btn-primary">Click here</a>
       </div>
     </div>
   </div>
@@ -15,7 +15,7 @@
       <div class="card-block">
         <h4 class="card-title">Manage Areas</h4>
         <p class="card-text">The different Product Areas of BriteCore</p>
-        <a href="#" class="btn btn-primary">Access the CRUD UI</a>
+        <a data-bind="click:curPage.bind(curPage, 'adminArea')" href="#" class="btn btn-primary">Click here</a>
       </div>
     </div>
   </div>
@@ -25,7 +25,19 @@
       <div class="card-block">
         <h4 class="card-title">Manage Users</h4>
         <p class="card-text">Control who can access this software</p>
-        <a href="#" class="btn btn-primary">Access the CRUD UI</a>
+        <a data-bind="click:curPage.bind(curPage, 'adminUser')" href="#" class="btn btn-primary">Click here</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
+  <div class="col-xs-4">
+    <div class="card">
+      <img class="card-img-top w-100" src="https://robohash.org/{{random_string(20)}}">
+      <div class="card-block">
+        <h4 class="card-title">Propose Features</h4>
+        <p class="card-text">Propose and prioritize the features that will be developed for BriteCore</p>
+        <a data-bind="click:curPage.bind(curPage, 'featuresClient')" href="#" class="btn btn-primary">Click here</a>
       </div>
     </div>
   </div>

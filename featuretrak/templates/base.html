@@ -11,32 +11,29 @@
   </head>
   <body>
     <nav class="navbar navbar-dark navbar-fixed-top bg-inverse">
-      <button type="button" class="navbar-toggler hidden-sm-up" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">FeatureTrak</a>
+      <!-- ko if: FT.loggedUser() == '' --> 
+      <span class="navbar-brand">FeatureTrak</span>
+      <!-- /ko -->
+      <!-- ko ifnot: FT.loggedUser() == '' --> 
+      <a data-bind="click: curPage.bind(curPage, 'home')" class="navbar-brand" href="#">FeatureTrak</a>
+      <!-- /ko -->
+      <!-- ko if: FT.loggedUser() != '' --> 
       <div id="navbar">
-        <nav class="nav navbar-nav pull-xs-left">
-          <a class="nav-item nav-link" href="#">Settings</a>
-          <a class="nav-item nav-link" href="#">Profile</a>
+        <nav class="nav navbar-nav pull-xs-right">
+          <a data-bind="click:logout" class="nav-item nav-link" href="#">Logout</a>
         </nav>
-        <form class="pull-xs-right">
-          <input type="text" class="form-control" placeholder="TBD...">
-        </form>
       </div>
+      <!-- /ko -->
     </nav>
 
     <div class="container">
-      <div style="display:hidden" class="row" data-bind="visible:breadcrumb().length > 0">
+      <div style="display:none" class="row" data-bind="visible: breadcrumb().length > 0">
         <ol class="breadcrumb" data-bind="foreach: breadcrumb">
             <!-- ko ifnot: ($root.breadcrumb().length - 1) == $index() -->
-              <li class="breadcrumb-item"><a href="#" data-bind="text: $data[0]">notlast</a></li>
+              <li class="breadcrumb-item"><a href="#" data-bind="click: $root.curPage.bind($root.curPage, $data.page), text: $data.caption">notlast</a></li>
             <!-- /ko -->
             <!-- ko if: ($root.breadcrumb().length - 1) == $index() -->
-              <li class="breadcrumb-item active" data-bind="text: $data[0]">last</li>
+              <li class="breadcrumb-item active" data-bind="text: $data.caption">last</li>
             <!-- /ko -->
         </ol>
       </div>

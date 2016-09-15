@@ -81,14 +81,46 @@ window.rest = {
 
 var FT = {}
 FT.curPage = ko.observable('login');
+
+FT.pages = {
+    adminClient : 'Client Management',
+    adminUser: 'User Management',
+    adminArea: 'Area Management',
+    featuresClient: 'Propose Features',
+    home: 'Home'
+}
+
+FT.logout = function() {
+    rest.POST('/api/v1/logout', '')
+    .then(function() {
+        $('#loginEmail').val('');
+        $('#loginPassword').val('');
+        FT.loggedUser('');
+        FT.breadcrumb([]);
+        FT.curPage('login');
+        $('#loginEmail').focus();
+    })
+}
+
 FT.login = {
     message : ko.observable(''),
     click : function() {
-        // yada yada
+        var username = $('#loginEmail').val();
+        var passwd = $('#loginPassword').val();
+        rest.POST('/api/v1/login', { username: username, passwd: passwd },
+                  function(ret) {
+                      if (ret.success) {
+                          FT.loggedUser(username);
+                          FT.curPage('home');
+                      } else {
+                          // TODO message...
+                      }
+                  });
     }
 }
 
-FT.breadcrumb = ko.observableArray([['Manage Clients', 'adminClient'], ['Propose features', 'featuresClient']]);
+FT.loggedUser = ko.observable('');
+FT.breadcrumb = ko.observableArray([]);
 
 FT.admin = {
     entity: function() {
@@ -198,7 +230,7 @@ FT.admin = {
         username: ko.observable(),
         full_name: ko.observable(),
         email: ko.observable(),
-        is_admin: ko.observable(),
+        is_admin: ko.observable(false),
         client_id: ko.observable(),
         passwd: ko.observable()
     },
@@ -211,8 +243,20 @@ FT.admin = {
 
 ko.applyBindings(FT);
 FT.curPage.subscribe(function(val) {
+    if (val == 'login') return;
+
+    var breadcrumb = FT.breadcrumb();
+
+    if (breadcrumb.length == 3) {
+        breadcrumb = breadcrumb.slice(1);
+    }
+    breadcrumb.push({page: val, caption: FT.pages[val]});
+    FT.breadcrumb(breadcrumb);
+
     if (val.substring(0, 5) == 'admin') {
         FT.admin.updateCurrentGrid();
+    } else if (val == 'featuresClient') {
+        jQuery('#features-client-public').sortable({handle:'.card-header'})
     }
 });
 
@@ -231,4 +275,11 @@ FT.admin.user.is_admin.subscribe(function(newVal) {
     $(pair[0]).on('shown.bs.modal', function() {
         $(pair[1]).focus();
     });
+});
+
+rest.GET('/api/v1/status', function(session) {
+    if (session.username) {
+        FT.loggedUser(session.username);
+        FT.curPage('home');
+    }
 });
