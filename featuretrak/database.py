@@ -25,6 +25,27 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.email
 
+    def is_valid(self, request):
+        ret = []
+        # toy validation
+        # First check key, then check key value
+        if 'username' in request:
+            if '@' in request['username']:
+                ret.append('The username cannot contain an "at" sign (@)')
+        if 'email' in request:
+            if not '@' in request['email']:
+                ret.append('The email address is invalid')
+        if 'is_admin' in request:
+            # admins don't belong to a client, non admins should always belong to one
+            if request['is_admin'] is True:
+                if self.client_id is not None:
+                    ret.append("There shouldn't be a client assigned to an Administrator")
+            else:
+                if not request.has_key('client_id'):
+                    ret.append('User should be assigned to a client')
+
+        return ret
+
     # flask-login properties
     @property
     def is_authenticated(self):
@@ -62,14 +83,12 @@ class Feature(db.Model):
     url = db.Column(db.String(1000))
     area_id = db.Column(db.Integer, db.ForeignKey('areas.id'))
     area = db.relationship('Area')
-    progress = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
         return '<Feature %r>' % self.title
 
 class Supporter(db.Model):
     __tablename__ = 'supporters'
-    id = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.Integer, primary_key=True)
     feature_id = db.Column(db.Integer, db.ForeignKey('features.id'))
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'))
