@@ -13,7 +13,7 @@
              <!-- ko foreach: $parent.columns -->
              <td data-bind="text: typeof rowText == 'function' ? rowText($parent) : $parent[rowText] "></td>
              <!-- /ko -->
-             <td><button class="btn btn-secondary btn-sm"data-bind="click: function() { $root.editFn(id)} "><img src="/static/icons/pencil-16-ns.png">&nbsp;Edit</button>&nbsp;<button class="btn btn-secondary btn-sm"data-bind="click: function() { $root.deleteFn(id)} "><img src="/static/icons/cross-16-ns.png">&nbsp;Delete</button></td>
+             <td><button class="btn btn-secondary btn-sm" data-bind="click: function() { $root.editFn(id)} "><span class="octicon octicon-pencil"></span>Edit</button>&nbsp;<button class="btn btn-danger btn-sm" data-bind="click: function() { $root.deleteFn(id)} "><span class="octicon octicon-trashcan"></span>Delete</button></td>
           </tr>
       </tbody>
   </table>
