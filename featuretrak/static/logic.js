@@ -240,6 +240,11 @@ FT.admin = {
     }
 }
 
+// features view
+FT.featuresClient = {
+        others : ko.observableArray(),
+        own : ko.observableArray()
+}
 
 ko.applyBindings(FT);
 FT.curPage.subscribe(function(val) {
@@ -256,7 +261,14 @@ FT.curPage.subscribe(function(val) {
     if (val.substring(0, 5) == 'admin') {
         FT.admin.updateCurrentGrid();
     } else if (val == 'featuresClient') {
-        jQuery('#features-client-public').sortable({handle:'.card-header'})
+        rest.GET('/api/v1/features', function(ret) {
+            FT.featuresClient.own(ret.own);
+            FT.featuresClient.others(ret.others);
+        });
+        $('#ft-features-sortable').sortable({
+            handle: '.card-header',
+            items: '.card'
+        })
     }
 });
 

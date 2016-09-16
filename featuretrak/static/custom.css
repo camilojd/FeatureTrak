@@ -2,22 +2,22 @@ body {
     padding-top: 80px;
 }
 
-#features-client-public div.card {
+.ft-features-list div.card {
     background-color:#FFDDAD;
 }
 
-#features-client-public .card-header {
+#ft-features-sortable .card-header {
     cursor: pointer;
 }
 
-#features-client-public .card .text-xs-right {
+.ft-features-list .card .text-xs-right {
     margin-bottom: 0;
 }
 
-#features-client-public .card-header {
+.ft-features-list .card-header {
     padding: 5px 10px 5px 10px;
 }
-#features-client-public .card .card-block {
+.ft-features-list .card .card-block {
     padding-top: 0.5rem;
     padding-bottom: 0;
 }

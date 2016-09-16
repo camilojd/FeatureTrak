@@ -95,7 +95,7 @@ class Supporter(db.Model):
     feature_id = db.Column(db.Integer, db.ForeignKey('features.id'))
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'))
     client = db.relationship('Client')
-    feature = db.relationship('Feature')
+    feature = db.relationship('Feature', backref='supporters')
     priority = db.Column(db.Integer, nullable=False)
 
 class Area(db.Model):

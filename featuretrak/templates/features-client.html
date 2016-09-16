@@ -1,35 +1,29 @@
 <div class="row" style="display:none" data-bind="visible: curPage() == 'featuresClient'">
-  <div id="features-client-public" class="col-md-5">
+  <div class="ft-features-list col-md-5">
     <h3>Public Feature Requests</h3>
-    <div class="card">
-        <div class="card-header">
-            ey
-        </div>
+    <div data-bind="foreach: featuresClient.others">
+      <div class="card">
+        <div class="card-header" data-bind="text: $data.title"></div>
         <div class="card-block">
-            <div class="row">
-            <p>
-            Lorem ipsum etc etc etc
-            </p>
-            <p class="text-xs-right"><input type="checkbox">Include as priority</p>
-            </div>
+          <div class="row">
+            <p>Lorem ipsum etc etc etc</p>
+            <p class="text-xs-right"><input data-bind="attr: { id: 'chkPrio' + $data.id }" type="checkbox"><label data-bind="attr: { for: 'chkPrio' + $data.id }">Include as priority</label></p>
+          </div>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-block">
-        Feat 2
-        </div>
+      </div>
     </div>
   </div>
-  <div id="features-client-client" class="col-md-7">
-    <h3>Client Feature Requests</h3>
-    <div class="card">
-    Propio 1
-    </div>
-    <div class="card">
-    Propio 2
+  <div class="ft-features-list col-md-7" id="ft-features-sortable">
+    <h3>Client Feature Requests</h3><small>(you can sort these to prioritize)</small>
+    <div data-bind="foreach: featuresClient.own">
+      <div class="card">
+        <div class="card-header" data-bind="text: $data.title"></div>
+        <div class="card-block">
+          <div class="row">
+            <p>Lorem ipsum etc etc etc</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<!--
-jQuery('#features-client-public').sortable({handle:'.card-header'})
--->

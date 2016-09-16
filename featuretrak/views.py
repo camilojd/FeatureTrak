@@ -1,5 +1,6 @@
 from flask import render_template, jsonify, request, make_response
-from database import app, db, User, Client, Area
+from database import app, db, User, Client, Area, Feature, Supporter
+from sqlalchemy import and_
 import flask_login
 
 # helper
@@ -207,14 +208,23 @@ def user_get_update_or_delete(user_id):
     return jsonify({})
 
 # Features
-@app.route('/api/v1/admin/features', methods=['GET'])
+@app.route('/api/v1/features', methods=['GET'])
 @flask_login.login_required
 def feature_list():
-    features = [make_sa_row_dict(r) for r in Feature.query.all()]
+    user = flask_login.current_user
 
-    return jsonify(features)
+    own_features = [make_sa_row_dict(r) for r in
+                    Feature.query.join(Feature.supporters)
+                                 .filter(Supporter.client_id == user.client_id)
+                                 .order_by(Supporter.priority)]
 
-@app.route('/api/v1/admin/feature', methods=['POST'])
+    others_public_features = [make_sa_row_dict(r) for r in
+                              Feature.query.filter(and_(Feature.client_id != user.client_id,
+                                                        Feature.is_public == True))]
+
+    return jsonify({'own' : own_features, 'others' : others_public_features})
+
+@app.route('/api/v1/feature', methods=['POST'])
 @flask_login.login_required
 def feature_create():
     obj = feature()
@@ -226,7 +236,7 @@ def feature_create():
 
     return jsonify({'id': obj.id})
 
-@app.route('/api/v1/admin/feature/<int:feature_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/api/v1/feature/<int:feature_id>', methods=['GET', 'PUT', 'DELETE'])
 @flask_login.login_required
 def feature_get_update_or_delete(feature_id):
     obj = feature.query.get_or_404(feature_id)
