@@ -198,13 +198,21 @@ user_admin.is_admin = True
 user_admin.email = 'staff@britecore.com'
 user_admin.passwd = '$$'
 
-user_talitha = User()
-user_talitha.username = 'talitha'
-user_talitha.full_name = 'Somebody @ Talitha Property'
-user_talitha.is_admin = False
-user_talitha.email = 'ask@talitha.prop'
-user_talitha.passwd = '$$'
-user_talitha.client = client_talitha
+user_orion = User()
+user_orion.username = 'orion'
+user_orion.full_name = 'Somebody @ Orion Capital'
+user_orion.is_admin = False
+user_orion.email = 'ask@orion.ca'
+user_orion.passwd = '$$'
+user_orion.client = client_orion
+
+user_sirius = User()
+user_sirius.username = 'sirius'
+user_sirius.full_name = 'John Doe @ Sirius Life'
+user_sirius.is_admin = False
+user_sirius.email = 'sirius@li.fe'
+user_sirius.passwd = '$$'
+user_sirius.client = client_sirius
 
 db.session.add(area_policies)
 db.session.add(area_billing)
@@ -215,7 +223,8 @@ db.session.add(client_orion)
 db.session.add(client_talitha)
 db.session.add(client_gemma)
 db.session.add(user_admin)
-db.session.add(user_talitha)
+db.session.add(user_orion)
+db.session.add(user_sirius)
 
 db.session.commit()
 
