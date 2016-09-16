@@ -267,7 +267,16 @@ FT.curPage.subscribe(function(val) {
         });
         $('#ft-features-sortable').sortable({
             handle: '.card-header',
-            items: '.card'
+            items: '.card',
+            update: function() {
+                var order = [];
+                $('#ft-features-sortable .card-header').each(function(idx, el) {
+                    var $el = $(el);
+                    order.push($el.data('feature-id'));
+                });
+
+                console.info(order);
+            }
         })
     }
 });

@@ -17,10 +17,21 @@
     <h3>Client Feature Requests</h3><small>(you can sort these to prioritize)</small>
     <div data-bind="foreach: featuresClient.own">
       <div class="card">
-        <div class="card-header" data-bind="text: $data.title"></div>
+        <div class="card-header" data-bind="text: $data.title, attr: { 'data-feature-id' : $data.id }"></div>
         <div class="card-block">
           <div class="row">
-            <p>Lorem ipsum etc etc etc</p>
+            <div class="ft-card-icon"><span class="octicon octicon-file-text" data-bind="attr: {title: $data.description }"></span></div>
+            <div class="ft-card-icon"><span class="octicon octicon-calendar" title="Target Date"></span><span data-bind="text: $data.target_date"></span></div>
+            <!-- ko if: $data.is_public -->
+            <div class="ft-card-icon"><span class="octicon octicon-globe" title="Public feature request"></span></div>
+            <!-- /ko -->
+            <!-- ko ifnot: $data.is_public -->
+            <div class="ft-card-icon"><span class="octicon octicon-gist-secret" title="Private feature request"></span></div>
+            <!-- /ko -->
+            <div class="pull-xs-right">
+            <button class="btn btn-primary btn-sm m-r-1" data-bind=""><span class="octicon octicon-pencil"></span>Edit</button>
+            <button class="btn btn-danger btn-sm" data-bind=""><span class="octicon octicon-trashcan"></span>Delete</button>
+            </div>
           </div>
         </div>
       </div>

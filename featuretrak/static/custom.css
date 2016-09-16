@@ -3,7 +3,7 @@ body {
 }
 
 .ft-features-list div.card {
-    background-color:#FFDDAD;
+    background-color:#EBF3F7;
 }
 
 #ft-features-sortable .card-header {
@@ -24,4 +24,13 @@ body {
 
 ul.ft-error-list {
     margin-bottom:0;
+}
+
+.ft-card-icon {
+    margin: 0px 3px 3px 0px;
+    border-radius: 3px;
+    display: inline-block;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 3px 1px 0px 3px;
 }

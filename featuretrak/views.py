@@ -213,10 +213,19 @@ def user_get_update_or_delete(user_id):
 def feature_list():
     user = flask_login.current_user
 
-    own_features = [make_sa_row_dict(r) for r in
-                    Feature.query.join(Feature.supporters)
-                                 .filter(Supporter.client_id == user.client_id)
-                                 .order_by(Supporter.priority)]
+    own_features = []
+    for feature in Feature.query.join(Feature.supporters) \
+                                 .filter(Supporter.client_id == user.client_id) \
+                                 .order_by(Supporter.priority):
+        row = {}
+        row['id'] = feature.id
+        row['description'] = feature.description
+        row['is_public'] = feature.is_public
+        row['target_date'] = feature.target_date.strftime('%Y-%m-%d')
+        row['title'] = feature.title
+        row['url'] = feature.url
+        row['area'] = feature.area.name
+        own_features.append(row)
 
     others_public_features = [make_sa_row_dict(r) for r in
                               Feature.query.filter(and_(Feature.client_id != user.client_id,
