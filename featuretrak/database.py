@@ -77,12 +77,14 @@ class Feature(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
     description = db.Column(db.Text(), nullable=False)
+    # feature owner
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
     client = db.relationship('Client')
     target_date = db.Column(db.Date)
     url = db.Column(db.String(1000))
     area_id = db.Column(db.Integer, db.ForeignKey('areas.id'))
     area = db.relationship('Area')
+    is_public = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return '<Feature %r>' % self.title
