@@ -218,7 +218,7 @@ FT.admin = {
         }
     },
 
-    // all clientes in User admin
+    // all clients in User admin
     clientList: ko.observableArray(),
     // currently edited admin objects
     client: {
