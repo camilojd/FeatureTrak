@@ -86,6 +86,17 @@ class Feature(db.Model):
     area = db.relationship('Area')
     is_public = db.Column(db.Boolean(), nullable=False, default=False)
 
+    def to_dict(self):
+        row = {}
+        row['id'] = self.id
+        row['description'] = self.description
+        row['is_public'] = self.is_public
+        row['target_date'] = self.target_date.strftime('%Y-%m-%d')
+        row['title'] = self.title
+        row['url'] = self.url
+        row['area'] = self.area.name
+        return row
+
     def __repr__(self):
         return '<Feature %r>' % self.title
 

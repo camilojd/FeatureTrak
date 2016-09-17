@@ -242,8 +242,63 @@ FT.admin = {
 
 // features view
 FT.featuresClient = {
-        others : ko.observableArray(),
-        own : ko.observableArray()
+    check: function(feature, boo) {
+        if (feature.included) {
+            // it WAS included, so now, remove it
+            FT.featuresClient.postRemoving(feature.id);
+            FT.featuresClient.query();
+        } else {
+            FT.featuresClient.postAdding(feature.id);
+            FT.featuresClient.query();
+        }
+        // not doing the `default` action because query() refreshes the controls
+    },
+
+    query: function() {
+        rest.GET('/api/v1/features', function(ret) {
+            FT.featuresClient.own(ret.own);
+            FT.featuresClient.others(ret.others);
+        });
+        $('#ft-features-sortable').sortable({
+            handle: '.card-header',
+            items: '.card',
+            update: function() {
+                FT.featuresClient.postOrder();
+            }
+        });
+    },
+
+    postOrder: function(options) {
+        options = typeof options != 'undefined' ? options : {};
+        var order = [];
+
+        $('#ft-features-sortable .card-header').each(function(idx, el) {
+            var $el = $(el);
+            var feature_id = $el.data('feature-id');
+            if (options.remove && options.remove == feature_id) return;
+
+            order.push(feature_id);
+        });
+
+        if (options.add) {
+            order.push(options.add);
+        }
+
+        rest.POST('/api/v1/sort-features', {features : order});
+    },
+
+    postAdding: function(which) {
+        var opt = { add: which };
+        FT.featuresClient.postOrder(opt);
+    },
+
+    postRemoving: function(which) {
+        var opt = { remove: which };
+        FT.featuresClient.postOrder(opt);
+    },
+
+    others : ko.observableArray(),
+    own : ko.observableArray()
 }
 
 ko.applyBindings(FT);
@@ -261,23 +316,7 @@ FT.curPage.subscribe(function(val) {
     if (val.substring(0, 5) == 'admin') {
         FT.admin.updateCurrentGrid();
     } else if (val == 'featuresClient') {
-        rest.GET('/api/v1/features', function(ret) {
-            FT.featuresClient.own(ret.own);
-            FT.featuresClient.others(ret.others);
-        });
-        $('#ft-features-sortable').sortable({
-            handle: '.card-header',
-            items: '.card',
-            update: function() {
-                var order = [];
-                $('#ft-features-sortable .card-header').each(function(idx, el) {
-                    var $el = $(el);
-                    order.push($el.data('feature-id'));
-                });
-
-                rest.POST('/api/v1/sort-features', {features : order});
-            }
-        })
+        FT.featuresClient.query();
     }
 });
 

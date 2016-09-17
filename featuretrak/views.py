@@ -214,22 +214,23 @@ def feature_list():
     user = flask_login.current_user
 
     own_features = []
+    public_supported = {}
     for feature in Feature.query.join(Feature.supporters) \
                                  .filter(Supporter.client_id == user.client_id) \
                                  .order_by(Supporter.priority):
-        row = {}
-        row['id'] = feature.id
-        row['description'] = feature.description
-        row['is_public'] = feature.is_public
-        row['target_date'] = feature.target_date.strftime('%Y-%m-%d')
-        row['title'] = feature.title
-        row['url'] = feature.url
-        row['area'] = feature.area.name
+        row = feature.to_dict()
+        # is this feature a public one that belongs to another client?
+        row['belongs_to_another'] = user.client_id != feature.client.id
+        if row['belongs_to_another']:
+            public_supported[feature.id] = 1
         own_features.append(row)
 
-    others_public_features = [make_sa_row_dict(r) for r in
-                              Feature.query.filter(and_(Feature.client_id != user.client_id,
-                                                        Feature.is_public == True))]
+    others_public_features = []
+    for feature in Feature.query.filter(and_(Feature.client_id != user.client_id,
+                                             Feature.is_public == True)):
+        row = feature.to_dict()
+        row['included'] = public_supported.has_key(feature.id)
+        others_public_features.append(row)
 
     return jsonify({'own' : own_features, 'others' : others_public_features})
 
