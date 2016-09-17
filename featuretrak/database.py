@@ -95,6 +95,7 @@ class Feature(db.Model):
         row['title'] = self.title
         row['url'] = self.url
         row['area'] = self.area.name
+        row['area_id'] = self.area.id
         return row
 
     def __repr__(self):

@@ -1,3 +1,4 @@
+// call each of the properties of entityObj with the values of the same key at obj
 function setModelValues(entityObj, obj) {
     for (var prop in entityObj) {
         if (entityObj.hasOwnProperty(prop)) {
@@ -122,6 +123,21 @@ FT.login = {
 FT.loggedUser = ko.observable('');
 FT.breadcrumb = ko.observableArray([]);
 
+FT.util = {
+    ajaxFailFn : function(xhr) {
+        if (xhr.status == 409) {
+            // validation
+            console.log('failed w/ validation or referential integrity errors');
+            if (xhr.responseJSON.validationErrors.length > 0) {
+                FT.admin.validationErrors(xhr.responseJSON.validationErrors);
+            }
+        } else {
+            // server errors (5xx)
+            console.log('server error here');
+        }
+    }
+}
+
 FT.admin = {
     entity: function() {
         // url entity is admin(.*)
@@ -194,32 +210,21 @@ FT.admin = {
             FT.admin.updateCurrentGrid();
         };
 
-        var failFn = function(xhr) {
-            if (xhr.status == 409) {
-                // validation
-                console.log('failed w/ validation or referential integrity errors');
-                if (xhr.responseJSON.validationErrors.length > 0) {
-                    FT.admin.validationErrors(xhr.responseJSON.validationErrors);
-                }
-            } else {
-                // server errors (5xx)
-                console.log('server error here');
-            }
-        };
 
         if (FT.admin.curEntityId == 0) {
             // add
             rest.POST('/api/v1/admin/' + entity, jsonData, successFn)
-                .fail(failFn);
+                .fail(FT.util.ajaxFailFn);
         } else {
             // update
             rest.PUT('/api/v1/admin/' + entity + '/' + FT.admin.curEntityId, jsonData, successFn)
-                .fail(failFn);
+                .fail(FT.util.ajaxFailFn);
         }
     },
 
     // all clients in User admin
     clientList: ko.observableArray(),
+
     // currently edited admin objects
     client: {
         name: ko.observable(),
@@ -244,13 +249,12 @@ FT.admin = {
 FT.featuresClient = {
     check: function(feature, boo) {
         if (feature.included) {
-            // it WAS included, so now, remove it
+            // previously was included, so remove it
             FT.featuresClient.postRemoving(feature.id);
-            FT.featuresClient.query();
         } else {
             FT.featuresClient.postAdding(feature.id);
-            FT.featuresClient.query();
         }
+        FT.featuresClient.query();
         // not doing the `default` action because query() refreshes the controls
     },
 
@@ -265,6 +269,11 @@ FT.featuresClient = {
             update: function() {
                 FT.featuresClient.postOrder();
             }
+        });
+
+        // refresh areas also
+        rest.GET('/api/v1/admin/areas', function(areas) {
+            FT.featuresClient.areaList(areas);
         });
     },
 
@@ -297,8 +306,55 @@ FT.featuresClient = {
         FT.featuresClient.postOrder(opt);
     },
 
+    edit: function(feature) {
+        rest.GET('/api/v1/feature/' + feature.id, function(data) {
+            setModelValues(FT.featuresClient.form, data);
+        }).then(function() {
+            FT.featuresClient.curEntityId = feature.id;
+            FT.admin.validationErrors([]);
+            $('#frmfeature').modal();
+        });
+    },
+
+    add: function() {
+        var koObj = FT.featuresClient.form;
+        setModelValues(koObj, emptyObjectFromKnockoutModel(koObj));
+        FT.featuresClient.curEntityId = 0;
+        FT.admin.validationErrors([]);
+        $('#frmfeature').modal();
+    },
+
+    save: function() {
+        var obj = ko.toJS(FT.featuresClient.form);
+
+        if (FT.featuresClient.curEntityId == 0) {
+            rest.POST('/api/v1/feature', obj, function() {
+                $('#frmfeature').modal('hide');
+                FT.featuresClient.query();
+            }).fail(FT.util.ajaxFailFn);
+        } else {
+            rest.PUT('/api/v1/feature/' + FT.featuresClient.curEntityId, obj, function() {
+                $('#frmfeature').modal('hide');
+                FT.featuresClient.query();
+            }).fail(FT.util.ajaxFailFn);
+        }
+    },
+
     others : ko.observableArray(),
-    own : ko.observableArray()
+    own : ko.observableArray(),
+
+    curEntityId: -1,
+
+    form: {
+        title : ko.observable(),
+        description: ko.observable(),
+        is_public: ko.observable(false),
+        target_date: ko.observable(),
+        url: ko.observable(),
+        area_id: ko.observable()
+    },
+
+    areaList: ko.observableArray([])
 }
 
 ko.applyBindings(FT);
@@ -330,16 +386,20 @@ FT.admin.user.is_admin.subscribe(function(newVal) {
 [
  ['#frmclient', '#client_name'],
  ['#frmarea', '#area_name'],
- ['#frmuser', '#user_username']
+ ['#frmuser', '#user_username'],
+ ['#frmfeature', '#feature_title']
 ].forEach(function(pair) {
     $(pair[0]).on('shown.bs.modal', function() {
         $(pair[1]).focus();
     });
 });
 
+// if logged in, go to the home
 rest.GET('/api/v1/status', function(session) {
     if (session.username) {
         FT.loggedUser(session.username);
         FT.curPage('home');
     }
 });
+
+$('#feature_target_date').datepicker({ dateFormat: 'yy-mm-dd' });

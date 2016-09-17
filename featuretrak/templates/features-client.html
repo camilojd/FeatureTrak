@@ -16,7 +16,7 @@
     </div>
   </div>
   <div class="ft-features-list col-md-7" id="ft-features-sortable">
-    <h3>Client Feature Requests</h3><small>(you can sort these to prioritize)</small>
+    <h3>Own Feature Requests</h3><small>(you can sort these to prioritize)</small>
     <div data-bind="foreach: featuresClient.own">
       <div class="card">
         <div class="card-header" data-bind="text: $data.title, attr: { 'data-feature-id' : $data.id }"></div>
@@ -30,12 +30,88 @@
             <!-- /ko -->
             <!-- ko ifnot: $data.belongs_to_another -->
             <div class="pull-xs-right">
-            <button class="btn btn-primary btn-sm m-r-1" data-bind=""><span class="octicon octicon-pencil"></span>Edit</button>
-            <button class="btn btn-danger btn-sm" data-bind=""><span class="octicon octicon-trashcan"></span>Delete</button>
+            <button class="btn btn-primary btn-sm m-r-1" data-bind="click: $root.featuresClient.edit"><span class="octicon octicon-pencil"></span>Edit</button>
+            <button class="btn btn-danger btn-sm" data-bind="click: $root.featuresClient.delete"><span class="octicon octicon-trashcan"></span>Delete</button>
             </div>
             <!-- /ko -->
           </div>
         </div>
+      </div>
+    </div>
+    <button class="btn btn-secondary" data-bind="click: featuresClient.add"><span class="octicon octicon-plus"></span>&nbsp;Add new</button>
+  </div>
+</div>
+
+<!-- features add/edit form -->
+<div id="frmfeature" class="modal fade">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Feature Edit</h4>
+      </div>
+      <div class="modal-body">
+        <div data-bind="visible: admin.validationErrors().length > 0" class="alert alert-danger" role="alert">
+          <strong>Sorry!</strong>&nbsp;There were some errors in your submission. Please check:
+          <ul class="ft-error-list" data-bind="foreach: admin.validationErrors">
+            <li data-bind="text: $data"></li>
+          </ul>
+        </div>
+        <form class="form-horizontal" onsubmit="return false">
+          <fieldset>
+            <div class="form-group row">
+              <label class="col-md-3 control-label" for="feature_title">Title</label>
+              <div class="col-md-9">
+                <input data-bind="value: featuresClient.form.title" id="feature_title" name="feature_title" type="text" class="form-control input-md" required="">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 control-label" for="feature_description">Description</label>
+              <div class="col-md-9">
+                <textarea class="form-control" rows="5" data-bind="value: featuresClient.form.description"></textarea>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 control-label" for="">Visibility</label>
+              <div class="col-md-5">
+                <label class="form-check-inline">
+                  <input class="form-check-input" type="radio" data-bind="checked: featuresClient.form.is_public, checkedValue: false" name="inlineRadioOptions">Private
+                </label>
+                <label class="form-check-inline">
+                  <input class="form-check-input" type="radio" data-bind="checked: featuresClient.form.is_public, checkedValue: true" name="inlineRadioOptions">Public
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 control-label" for="">Target date</label>
+              <div class="col-md-3">
+                <input data-bind="value: featuresClient.form.target_date" id="feature_target_date" name="feature_target_date" type="text" class="form-control input-md" required="">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 control-label" for="area_name">URL</label>
+              <div class="col-md-9">
+                <input data-bind="value: featuresClient.form.url" name="feature_url" type="text" class="form-control input-md" required="">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-3 control-label" for="area_name">Area</label>
+              <div class="col-md-5">
+                <select data-bind="value: featuresClient.form.area_id, options: featuresClient.areaList, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Choose an Area'" class="form-control"></select>
+              </div>
+            </div>
+
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bind="click: featuresClient.save">Save changes</button>
       </div>
     </div>
   </div>

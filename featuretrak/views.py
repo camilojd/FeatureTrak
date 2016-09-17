@@ -1,6 +1,6 @@
 from flask import render_template, jsonify, request, make_response
 from database import app, db, User, Client, Area, Feature, Supporter
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 import flask_login
 
 # helper
@@ -237,11 +237,26 @@ def feature_list():
 @app.route('/api/v1/feature', methods=['POST'])
 @flask_login.login_required
 def feature_create():
-    obj = feature()
+    obj = Feature()
     for k, v in request.json.iteritems():
         setattr(obj, k, v)
 
+    if obj.area_id is None:
+        return make_response(jsonify({'validationErrors' : ['An area should be specified']}), 409)
+
+    user = flask_login.current_user
+    obj.client_id = user.id
     db.session.add(obj)
+
+    # associate as Supporter
+    max_priority = db.session.query(func.max(Supporter.priority)) \
+                             .filter(Supporter.client_id == user.id).first()
+    supporter = Supporter()
+    supporter.client_id = user.client.id
+    supporter.feature_id = obj.id
+    supporter.priority = max_priority[0] + 1
+    db.session.add(supporter)
+
     db.session.commit()
 
     return jsonify({'id': obj.id})
@@ -249,9 +264,9 @@ def feature_create():
 @app.route('/api/v1/feature/<int:feature_id>', methods=['GET', 'PUT', 'DELETE'])
 @flask_login.login_required
 def feature_get_update_or_delete(feature_id):
-    obj = feature.query.get_or_404(feature_id)
+    obj = Feature.query.get_or_404(feature_id)
     if request.method == 'GET':
-        return jsonify(make_sa_row_dict(obj))
+        return jsonify(obj.to_dict())
 
     ret = {}
     try:
