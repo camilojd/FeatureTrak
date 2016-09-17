@@ -10,20 +10,12 @@ body {
     cursor: pointer;
 }
 
-.ft-features-list .card .text-xs-right {
-    margin-bottom: 0;
-}
-
 .ft-features-list .card-header {
     padding: 5px 10px 5px 10px;
 }
+
 .ft-features-list .card .card-block {
     padding-top: 0.5rem;
-    padding-bottom: 0;
-}
-
-ul.ft-error-list {
-    margin-bottom:0;
 }
 
 .ft-card-icon {
