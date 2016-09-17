@@ -28,9 +28,6 @@
             <!-- ko if: $data.is_public -->
             <div class="ft-card-icon"><span class="octicon octicon-globe" title="Public feature request"></span></div>
             <!-- /ko -->
-            <!-- ko ifnot: $data.is_public -->
-            <div class="ft-card-icon"><span class="octicon octicon-gist-secret" title="Private feature request"></span></div>
-            <!-- /ko -->
             <!-- ko ifnot: $data.belongs_to_another -->
             <div class="pull-xs-right">
             <button class="btn btn-primary btn-sm m-r-1" data-bind=""><span class="octicon octicon-pencil"></span>Edit</button>
