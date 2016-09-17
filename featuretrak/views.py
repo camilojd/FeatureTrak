@@ -269,3 +269,24 @@ def feature_get_update_or_delete(feature_id):
         return make_response(jsonify(ret), 409)
 
     return jsonify(ret)
+
+@app.route('/api/v1/sort-features', methods=['POST'])
+@flask_login.login_required
+def feature_sort():
+    # TODO validate that only public features or features belonging
+    # to this user can be sorted
+    user = flask_login.current_user
+    Supporter.query.filter(Supporter.client_id == user.client_id).delete()
+    priority = 0
+    for feature_id in request.json['features']:
+        supporter = Supporter()
+        supporter.feature_id = feature_id
+        supporter.client_id = user.client.id
+        supporter.priority = priority
+        priority += 1
+        db.session.add(supporter)
+
+    db.session.commit()
+
+    return jsonify({'ret' : True})
+

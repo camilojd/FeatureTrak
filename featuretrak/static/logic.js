@@ -275,7 +275,7 @@ FT.curPage.subscribe(function(val) {
                     order.push($el.data('feature-id'));
                 });
 
-                console.info(order);
+                rest.POST('/api/v1/sort-features', {features : order});
             }
         })
     }
