@@ -21,6 +21,7 @@
       <!-- ko if: FT.loggedUser() != '' --> 
       <div id="navbar">
         <nav class="nav navbar-nav pull-xs-right">
+          <div class="nav-item nav-link active">Logged in as <span data-bind="text: FT.loggedUser()"></span></div>
           <a data-bind="click:logout" class="nav-item nav-link" href="#">Logout</a>
         </nav>
       </div>
