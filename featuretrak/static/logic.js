@@ -397,12 +397,12 @@ FT.featuresClient = {
     curEntityId: -1,
 
     form: {
-        title : ko.observable(),
-        description: ko.observable(),
+        title : ko.observable(''),
+        description: ko.observable(''),
         is_public: ko.observable(false),
-        target_date: ko.observable(),
+        target_date: ko.observable(''),
         url: ko.observable(''),
-        area_id: ko.observable()
+        area_id: ko.observable(0)
     },
 
     areaList: ko.observableArray([])
