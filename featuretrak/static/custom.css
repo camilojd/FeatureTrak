@@ -33,3 +33,7 @@ body {
     right: 40px;
     z-index:1031;
 }
+
+div.alert-dismissible strong {
+    text-transform: capitalize;
+}

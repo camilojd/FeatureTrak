@@ -34,7 +34,9 @@ def login():
         criteria['username'] = request.json['username']
     user = User.query.filter_by(**criteria).first() 
     if user is None:
-        return jsonify({'success': False, 'msj': 'Invalid credentials'})
+        return jsonify({'success': False,
+                        'msgText': 'Invalid credentials',
+                        'msgType': 'error'})
 
     # any password is valid...
     flask_login.login_user(user)
@@ -91,7 +93,8 @@ def client_get_update_or_delete(client_id):
         db.session.commit()
     except Exception as e:
         # may fail due to FK constraints, field validation, etc
-        ret['msj'] = str(e)
+        ret['msgText'] = 'Exception: ' + str(e)
+        ret['msgType'] = 'error'
 
         return make_response(jsonify(ret), 409)
 
@@ -136,7 +139,8 @@ def area_get_update_or_delete(area_id):
         db.session.commit()
     except Exception as e:
         # may fail due to FK constraints, field validation, etc
-        ret['msj'] = str(e)
+        ret['msgText'] = 'Exception: ' + str(e)
+        ret['msgType'] = 'error'
 
         return make_response(jsonify(ret), 409)
 
@@ -185,6 +189,8 @@ def user_get_update_or_delete(user_id):
         d['passwd'] = 'NONMODIFIED'
         return jsonify(d)
 
+    ret = {}
+
     try:
         if request.method == 'PUT':
             errs = obj.is_valid(request.json)
@@ -203,10 +209,12 @@ def user_get_update_or_delete(user_id):
         db.session.commit()
     except Exception as e:
         # may fail due to FK constraints, field validation, etc
+        ret['msgText'] = 'Exception: ' + str(e)
+        ret['msgType'] = 'error'
 
-        return make_response(jsonify({'msj' : str(e)}), 409)
+        return make_response(jsonify(ret), 409)
 
-    return jsonify({})
+    return jsonify(ret)
 
 # Features
 @app.route('/api/v1/features', methods=['GET'])
@@ -272,13 +280,14 @@ def feature_get_update_or_delete(feature_id):
     ret = {}
     try:
         if obj.is_public:
-            # public features currently supported by other clients cannot be edited nor deleted
+            # public features currently backed by other clients cannot be edited nor deleted
             user = flask_login.current_user
             others_cnt = Supporter.query.filter(and_(Supporter.client_id != user.client.id,
                                                      Supporter.feature_id == obj.id)).count()
             if others_cnt > 0:
-                msj = "Unable to edit or delete public feature, it's currently supported by other clients"
-                return make_response(jsonify({'msj': msj}), 409)
+                ret['msgText'] = "Unable to edit or delete public feature, it's currently supported by other clients"
+                ret['msgType'] = 'error'
+                return make_response(jsonify(ret), 409)
 
         if request.method == 'PUT':
             # could validate data here...
@@ -291,7 +300,8 @@ def feature_get_update_or_delete(feature_id):
         db.session.commit()
     except Exception as e:
         # may fail due to FK constraints, field validation, etc
-        ret['msj'] = str(e)
+        ret['msgText'] = 'Exception: ' + str(e)
+        ret['msgType'] = 'error'
 
         return make_response(jsonify(ret), 409)
 

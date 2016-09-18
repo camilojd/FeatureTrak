@@ -150,17 +150,34 @@ FT.loggedIsAdmin = ko.observable();
 FT.breadcrumb = ko.observableArray([]);
 
 FT.util = {
-    ajaxFailFn : function(xhr) {
+    ajaxFailFn : function(ev, xhr) {
+        var json = xhr.responseJSON;
         if (xhr.status == 409) {
-            var json = xhr.responseJSON;
             // validation
-            console.log(json);
             if (json.validationErrors && json.validationErrors.length > 0) {
                 FT.validationErrors(json.validationErrors);
             }
         } else {
             // server errors (5xx)
-            console.log('server error here');
+            var _alert = {
+                            type: 'danger',
+                            title: 'Server error',
+                            text: 'There was an unexpected server error. <br>' +
+                                  'Please contact technical support.'
+                         };
+            FT.showAlert(_alert);
+        }
+    },
+    ajaxCompleteFn : function(ev, xhr) {
+        // if the JSON message carries a messege, display it
+        var json = xhr.responseJSON;
+        if (xhr.status < 500 && json.msgText && json.msgType) {
+            var _alert = {
+                            type: json.msgType == 'error' ? 'danger' : json.msgType, // use BS scary className
+                            title: json.msgType,
+                            text: json.msgText
+                         };
+            FT.showAlert(_alert);
         }
     }
 }
@@ -238,12 +255,10 @@ FT.admin = {
 
         if (FT.admin.curEntityId == 0) {
             // add
-            rest.POST('/api/v1/admin/' + entity, jsonData, successFn)
-                .fail(FT.util.ajaxFailFn);
+            rest.POST('/api/v1/admin/' + entity, jsonData, successFn);
         } else {
             // update
-            rest.PUT('/api/v1/admin/' + entity + '/' + FT.admin.curEntityId, jsonData, successFn)
-                .fail(FT.util.ajaxFailFn);
+            rest.PUT('/api/v1/admin/' + entity + '/' + FT.admin.curEntityId, jsonData, successFn);
         }
     },
 
@@ -252,21 +267,21 @@ FT.admin = {
 
     // currently edited admin objects
     client: {
-        name: ko.observable(),
-        weight: ko.observable()
+        name: ko.observable(''),
+        weight: ko.observable(1)
     },
 
     user: {
-        username: ko.observable(),
-        full_name: ko.observable(),
-        email: ko.observable(),
+        username: ko.observable(''),
+        full_name: ko.observable(''),
+        email: ko.observable(''),
         is_admin: ko.observable(false),
-        client_id: ko.observable(),
-        passwd: ko.observable()
+        client_id: ko.observable(0),
+        passwd: ko.observable('')
     },
 
     area: {
-        name: ko.observable()
+        name: ko.observable('')
     }
 }
 
@@ -356,12 +371,12 @@ FT.featuresClient = {
             rest.POST('/api/v1/feature', obj, function() {
                 $('#frmfeature').modal('hide');
                 FT.featuresClient.query();
-            }).fail(FT.util.ajaxFailFn);
+            });
         } else {
             rest.PUT('/api/v1/feature/' + FT.featuresClient.curEntityId, obj, function() {
                 $('#frmfeature').modal('hide');
                 FT.featuresClient.query();
-            }).fail(FT.util.ajaxFailFn);
+            });
         }
     },
 
@@ -373,7 +388,7 @@ FT.featuresClient = {
         rest.DELETE('/api/v1/feature/' + row.id)
         .then(function() {
             FT.featuresClient.query();
-        }).fail(FT.util.ajaxFailFn);
+        });
     },
 
     others : ko.observableArray(),
@@ -429,6 +444,10 @@ FT.admin.user.is_admin.subscribe(function(newVal) {
         $(pair[1]).focus();
     });
 });
+
+// register ajax global handlers
+$(document).ajaxError(FT.util.ajaxFailFn);
+$(document).ajaxComplete(FT.util.ajaxCompleteFn);
 
 // if logged in, go to the home
 rest.GET('/api/v1/status', function(session) {
