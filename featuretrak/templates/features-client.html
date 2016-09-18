@@ -51,9 +51,9 @@
         <h4 class="modal-title">Feature Edit</h4>
       </div>
       <div class="modal-body">
-        <div data-bind="visible: admin.validationErrors().length > 0" class="alert alert-danger" role="alert">
+        <div data-bind="visible: validationErrors().length > 0" class="alert alert-danger" role="alert">
           <strong>Sorry!</strong>&nbsp;There were some errors in your submission. Please check:
-          <ul class="ft-error-list m-b-0" data-bind="foreach: admin.validationErrors">
+          <ul class="ft-error-list m-b-0" data-bind="foreach: validationErrors">
             <li data-bind="text: $data"></li>
           </ul>
         </div>

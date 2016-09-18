@@ -43,7 +43,7 @@ var PagedGridModel = function(columns) {
                 setModelValues(container, data);
             }).then(function() {
                 FT.admin.curEntityId = id;
-                FT.admin.validationErrors([]);
+                FT.validationErrors([]);
                 $('#frm' + entity).modal();
             });
         },
@@ -82,6 +82,8 @@ window.rest = {
 
 var FT = {}
 FT.curPage = ko.observable('login');
+
+FT.validationErrors = ko.observableArray([]);
 
 FT.showAlert = function(_alert) {
     var time = new Date().getTime();
@@ -151,7 +153,7 @@ FT.util = {
             // validation
             console.log(json);
             if (json.validationErrors && json.validationErrors.length > 0) {
-                FT.admin.validationErrors(json.validationErrors);
+                FT.validationErrors(json.validationErrors);
             }
         } else {
             // server errors (5xx)
@@ -211,15 +213,13 @@ FT.admin = {
         }
     },
 
-    validationErrors: ko.observableArray([]),
-
     showAdd: function() {
         var entity = FT.admin.entity();
         container = FT.admin[entity];
         setModelValues(container, emptyObjectFromKnockoutModel(container));
 
         FT.admin.curEntityId = 0;
-        FT.admin.validationErrors([]);
+        FT.validationErrors([]);
         $('#frm' + entity).modal();
     },
 
@@ -333,7 +333,7 @@ FT.featuresClient = {
             setModelValues(FT.featuresClient.form, data);
         }).then(function() {
             FT.featuresClient.curEntityId = feature.id;
-            FT.admin.validationErrors([]);
+            FT.validationErrors([]);
             $('#frmfeature').modal();
         });
     },
@@ -342,7 +342,7 @@ FT.featuresClient = {
         var koObj = FT.featuresClient.form;
         setModelValues(koObj, emptyObjectFromKnockoutModel(koObj));
         FT.featuresClient.curEntityId = 0;
-        FT.admin.validationErrors([]);
+        FT.validationErrors([]);
         $('#frmfeature').modal();
     },
 
