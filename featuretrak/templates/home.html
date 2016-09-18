@@ -1,3 +1,4 @@
+<!-- ko if: loggedIsAdmin -->
 <div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
   <div class="col-xs-4">
     <div class="card">
@@ -30,6 +31,8 @@
     </div>
   </div>
 </div>
+<!-- /ko -->
+<!-- ko ifnot: loggedIsAdmin -->
 <div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
   <div class="col-xs-4">
     <div class="card">
@@ -42,3 +45,4 @@
     </div>
   </div>
 </div>
+<!-- /ko -->

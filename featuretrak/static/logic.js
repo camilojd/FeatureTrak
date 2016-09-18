@@ -120,6 +120,7 @@ FT.logout = function() {
         $('#loginEmail').val('');
         $('#loginPassword').val('');
         FT.loggedUser('');
+        FT.loggedIsAdmin(false);
         FT.breadcrumb([]);
         FT.curPage('login');
         $('#loginEmail').focus();
@@ -135,6 +136,7 @@ FT.login = {
                   function(ret) {
                       if (ret.success) {
                           FT.loggedUser(username);
+                          FT.loggedIsAdmin(ret.is_admin);
                           FT.curPage('home');
                       } else {
                           // TODO message...
@@ -144,6 +146,7 @@ FT.login = {
 }
 
 FT.loggedUser = ko.observable('');
+FT.loggedIsAdmin = ko.observable();
 FT.breadcrumb = ko.observableArray([]);
 
 FT.util = {
@@ -383,7 +386,7 @@ FT.featuresClient = {
         description: ko.observable(),
         is_public: ko.observable(false),
         target_date: ko.observable(),
-        url: ko.observable(),
+        url: ko.observable(''),
         area_id: ko.observable()
     },
 
@@ -431,6 +434,7 @@ FT.admin.user.is_admin.subscribe(function(newVal) {
 rest.GET('/api/v1/status', function(session) {
     if (session.username) {
         FT.loggedUser(session.username);
+        FT.loggedIsAdmin(session.is_admin);
         FT.curPage('home');
     }
 });

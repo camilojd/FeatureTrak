@@ -21,6 +21,7 @@ def status():
     if user.is_authenticated:
         status['username'] = user.username
         status['full_name'] = user.full_name
+        status['is_admin'] = user.is_admin
 
     return jsonify(status)
 
@@ -37,7 +38,7 @@ def login():
 
     # any password is valid...
     flask_login.login_user(user)
-    return jsonify({'success' : True})
+    return jsonify({'success' : True, 'is_admin' : user.is_admin})
 
 @app.route('/api/v1/logout', methods=['POST'])
 @flask_login.login_required
