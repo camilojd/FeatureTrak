@@ -66,7 +66,24 @@ class Client(db.Model):
     __tablename__ = 'clients'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    weight = db.Column(db.Integer, nullable=False)
+    weight = db.Column(db.Numeric(precision=5, scale=2), nullable=False, default=1)
+
+    def is_valid(self, request):
+        ret = []
+        if 'weight' in request:
+            try:
+                float(request['weight'])
+            except ValueError as e:
+                ret.append('Client should have a valid numeric weight')
+
+        return ret
+
+    def to_dict(self):
+        row = {}
+        row['id'] = self.id
+        row['name'] = self.name
+        row['weight'] = str(self.weight)
+        return row
 
     def __repr__(self):
         return '<Client %r>' % self.name

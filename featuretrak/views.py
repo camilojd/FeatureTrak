@@ -58,7 +58,7 @@ def whoami():
 @app.route('/api/v1/admin/clients', methods=['GET'])
 @flask_login.login_required
 def client_list():
-    clients = [make_sa_row_dict(r) for r in Client.query.all()]
+    clients = [r.to_dict() for r in Client.query.all()]
 
     return jsonify(clients)
 
@@ -68,6 +68,10 @@ def client_create():
     obj = Client()
     for k, v in request.json.iteritems():
         setattr(obj, k, v)
+
+    errs = obj.is_valid(request.json)
+    if len(errs) > 0:
+        return make_response(jsonify({'validationErrors' : errs}), 409)
 
     db.session.add(obj)
     db.session.commit()
@@ -79,14 +83,18 @@ def client_create():
 def client_get_update_or_delete(client_id):
     obj = Client.query.get_or_404(client_id)
     if request.method == 'GET':
-        return jsonify(make_sa_row_dict(obj))
+        return jsonify(obj.to_dict())
 
     ret = {}
     try:
         if request.method == 'PUT':
-            # could validate data here...
             for k, v in request.json.iteritems():
                 setattr(obj, k, v)
+
+            errs = obj.is_valid(request.json)
+            if len(errs) > 0:
+                return make_response(jsonify({'validationErrors' : errs}), 409)
+
         else:
             db.session.delete(obj)
 
