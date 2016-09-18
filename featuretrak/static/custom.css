@@ -27,6 +27,14 @@ body {
     padding: 3px 1px 0px 3px;
 }
 
+.ft-card-text {
+    height:100px;
+    overflow:auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 3px;
+}
+
 #ft-growl-notifications {
     position: absolute;
     top:40px;

@@ -31,6 +31,18 @@
     </div>
   </div>
 </div>
+<div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
+  <div class="col-xs-4">
+    <div class="card">
+      <img class="card-img-top w-100" src="https://robohash.org/{{random_string(20)}}">
+      <div class="card-block">
+        <h4 class="card-title">Features List</h4>
+        <p class="card-text">A consolidated view of user requested features, sorted from the most important to the least one</p>
+        <a data-bind="click:curPage.bind(curPage, 'featuresStaff')" href="#" class="btn btn-primary">Click here</a>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- /ko -->
 <!-- ko ifnot: loggedIsAdmin -->
 <div class="row" style="display:none" data-bind="visible: curPage() == 'home'">

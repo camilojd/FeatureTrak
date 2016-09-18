@@ -1,5 +1,6 @@
 from flask import render_template, jsonify, request, make_response
 from database import app, db, User, Client, Area, Feature, Supporter
+from decimal import Decimal
 from sqlalchemy import and_, func
 import flask_login
 
@@ -335,3 +336,31 @@ def feature_sort():
 
     return jsonify({'ret' : True})
 
+
+@app.route('/api/v1/admin/features-global', methods=['GET'])
+@flask_login.login_required
+def features_global_list():
+    sql = '''
+        select a.feature_id,
+               sum(a.points) as rank
+          from ( select s.feature_id,
+                        ((summary.cnt - s.priority - summary.min_priority) / summary.cnt) * c.weight  as points
+                   from supporters s
+                        inner join (select client_id,
+                                           min(priority) as min_priority,
+                                           count(*) as cnt
+                                      from supporters
+                                     group by client_id) summary on (s.client_id = summary.client_id)
+                        inner join clients c on (s.client_id = c.id)) a
+         group by a.feature_id
+        order by rank desc, feature_id asc -- tie break on first created
+    '''
+
+    quantize_factor = Decimal('0.001')
+    features = []
+    for row in db.engine.execute(sql):
+        feature_row = Feature.query.get(row[0]).to_dict(include_supporters=True)
+        feature_row['rank'] = str(row[1].quantize(quantize_factor))
+        features.append(feature_row)
+
+    return jsonify(features)

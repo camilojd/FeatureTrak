@@ -103,7 +103,7 @@ class Feature(db.Model):
     area = db.relationship('Area')
     is_public = db.Column(db.Boolean(), nullable=False, default=False)
 
-    def to_dict(self):
+    def to_dict(self, include_supporters=False):
         row = {}
         row['id'] = self.id
         row['description'] = self.description
@@ -113,6 +113,12 @@ class Feature(db.Model):
         row['url'] = self.url
         row['area'] = self.area.name
         row['area_id'] = self.area.id
+        row['client_name'] = self.client.name
+        row['client_id'] = self.client.id
+        if include_supporters:
+            # may be possible to configure SA to lazily load this...
+            row['supporters_cnt'] = len(self.supporters)
+            row['supporters_names'] = ', '.join([k.client.name for k in self.supporters])
         return row
 
     def __repr__(self):

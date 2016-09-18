@@ -111,6 +111,7 @@ FT.pages = {
     adminUser: 'User Management',
     adminArea: 'Area Management',
     featuresClient: 'Propose Features',
+    featuresStaff: 'Global Features List',
     home: 'Home'
 }
 
@@ -408,6 +409,18 @@ FT.featuresClient = {
     areaList: ko.observableArray([])
 }
 
+FT.featuresStaff = {
+    list: ko.observableArray([]),
+    query: function() {
+        rest.GET('/api/v1/admin/features-global', function(features) {
+            for (var i = 0; i < features.length; i++) {
+                features[i].description = features[i].description.replace(/\n/g, '<br>');
+            }
+            FT.featuresStaff.list(features);
+        });
+    }
+}
+
 ko.applyBindings(FT);
 FT.curPage.subscribe(function(val) {
     if (val == 'login') return;
@@ -424,7 +437,12 @@ FT.curPage.subscribe(function(val) {
         FT.admin.updateCurrentGrid();
     } else if (val == 'featuresClient') {
         FT.featuresClient.query();
+    } else if (val == 'featuresStaff') {
+        FT.featuresStaff.query();
     }
+
+    // scroll to top
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
 });
 
 FT.admin.user.is_admin.subscribe(function(newVal) {
