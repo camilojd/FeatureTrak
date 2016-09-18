@@ -147,10 +147,11 @@ FT.breadcrumb = ko.observableArray([]);
 FT.util = {
     ajaxFailFn : function(xhr) {
         if (xhr.status == 409) {
+            var json = xhr.responseJSON;
             // validation
-            console.log('failed w/ validation or referential integrity errors');
-            if (xhr.responseJSON.validationErrors.length > 0) {
-                FT.admin.validationErrors(xhr.responseJSON.validationErrors);
+            console.log(json);
+            if (json.validationErrors && json.validationErrors.length > 0) {
+                FT.admin.validationErrors(json.validationErrors);
             }
         } else {
             // server errors (5xx)
@@ -359,6 +360,17 @@ FT.featuresClient = {
                 FT.featuresClient.query();
             }).fail(FT.util.ajaxFailFn);
         }
+    },
+
+    del: function(row) {
+        if (!confirm('Are you sure?')) {
+            return;
+        }
+
+        rest.DELETE('/api/v1/feature/' + row.id)
+        .then(function() {
+            FT.featuresClient.query();
+        }).fail(FT.util.ajaxFailFn);
     },
 
     others : ko.observableArray(),

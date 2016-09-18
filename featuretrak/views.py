@@ -245,16 +245,16 @@ def feature_create():
         return make_response(jsonify({'validationErrors' : ['An area should be specified']}), 409)
 
     user = flask_login.current_user
-    obj.client_id = user.id
+    obj.client_id = user.client.id
     db.session.add(obj)
 
     # associate as Supporter
     max_priority = db.session.query(func.max(Supporter.priority)) \
-                             .filter(Supporter.client_id == user.id).first()
+                             .filter(Supporter.client_id == user.client.id).first()
     supporter = Supporter()
     supporter.client_id = user.client.id
     supporter.feature_id = obj.id
-    supporter.priority = max_priority[0] + 1
+    supporter.priority = 0 if max_priority[0] is None else (max_priority[0] + 1)
     db.session.add(supporter)
 
     db.session.commit()
@@ -270,11 +270,21 @@ def feature_get_update_or_delete(feature_id):
 
     ret = {}
     try:
+        if obj.is_public:
+            # public features currently supported by other clients cannot be edited nor deleted
+            user = flask_login.current_user
+            others_cnt = Supporter.query.filter(and_(Supporter.client_id != user.client.id,
+                                                     Supporter.feature_id == obj.id)).count()
+            if others_cnt > 0:
+                msj = "Unable to edit or delete public feature, it's currently supported by other clients"
+                return make_response(jsonify({'msj': msj}), 409)
+
         if request.method == 'PUT':
             # could validate data here...
             for k, v in request.json.iteritems():
                 setattr(obj, k, v)
         else:
+            Supporter.query.filter(Supporter.feature_id == obj.id).delete()
             db.session.delete(obj)
 
         db.session.commit()
