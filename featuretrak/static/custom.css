@@ -26,3 +26,10 @@ body {
     border: 1px solid #ccc;
     padding: 3px 1px 0px 3px;
 }
+
+#ft-growl-notifications {
+    position: absolute;
+    top:40px;
+    right: 40px;
+    z-index:1031;
+}

@@ -83,6 +83,27 @@ window.rest = {
 var FT = {}
 FT.curPage = ko.observable('login');
 
+FT.showAlert = function(_alert) {
+    var time = new Date().getTime();
+    var type = _alert.type || 'info'; // also: danger, success, warning
+    var html = '<div style="display:hidden" class="alert alert-' + type + ' alert-dismissible" data-aid="' + time + '" role="alert">' +
+               '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+               '    <span aria-hidden="true">&times;</span>' +
+               '  </button>' +
+               '  <strong>' + _alert.title + '</strong>' +
+               '  <br>' + _alert.text +
+               '</div>';
+
+    $(html).hide().appendTo('#ft-growl-notifications').fadeIn(300);
+    setTimeout(function() {
+        var query = $('#ft-growl-notifications div[data-aid=' + time + ']');
+        if (query.length) {
+            // could have been dismissed
+            $(query).fadeOut();
+        }
+    }, _alert.timeout || 5000);
+}
+
 FT.pages = {
     adminClient : 'Client Management',
     adminUser: 'User Management',
