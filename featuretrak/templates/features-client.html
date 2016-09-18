@@ -8,7 +8,9 @@
           <div class="row">
             <div class="ft-card-icon"><span class="octicon octicon-file-text" data-bind="attr: {title: $data.description }"></span></div>
             <div class="ft-card-icon"><span class="octicon octicon-milestone" title="Area"></span><span data-bind="text: $data.area"></span></div>
+            <!-- ko if: $data.target_date != '' -->
             <div class="ft-card-icon"><span class="octicon octicon-calendar" title="Target Date"></span><span data-bind="text: $data.target_date"></span></div>
+            <!-- /ko -->
             <p class="text-xs-right m-b-0"><input data-bind="click: $root.featuresClient.check, attr: { id: 'chkPrio' + $data.id }, checked: $data.included" type="checkbox"><label data-bind="attr: { for: 'chkPrio' + $data.id }">Include as priority</label></p>
           </div>
         </div>
