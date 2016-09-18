@@ -81,7 +81,7 @@ window.rest = {
 }
 
 var FT = {}
-FT.curPage = ko.observable('login');
+FT.curPage = ko.observable('__NOTTHEREYET__');
 
 FT.validationErrors = ko.observableArray([]);
 
@@ -423,15 +423,17 @@ FT.featuresStaff = {
 
 ko.applyBindings(FT);
 FT.curPage.subscribe(function(val) {
-    if (val == 'login') return;
+    if (val != 'login') {
+        var breadcrumb = FT.breadcrumb();
 
-    var breadcrumb = FT.breadcrumb();
-
-    if (breadcrumb.length == 3) {
-        breadcrumb = breadcrumb.slice(1);
+        if (breadcrumb.length == 3) {
+            breadcrumb = breadcrumb.slice(1);
+        }
+        breadcrumb.push({page: val, caption: FT.pages[val]});
+        FT.breadcrumb(breadcrumb);
+    } else {
+        FT.breadcrumb([]);
     }
-    breadcrumb.push({page: val, caption: FT.pages[val]});
-    FT.breadcrumb(breadcrumb);
 
     if (val.substring(0, 5) == 'admin') {
         FT.admin.updateCurrentGrid();
@@ -443,6 +445,7 @@ FT.curPage.subscribe(function(val) {
 
     // scroll to top
     document.body.scrollTop = document.documentElement.scrollTop = 0;
+    window.location.hash = '#/' + val;
 });
 
 FT.admin.user.is_admin.subscribe(function(newVal) {
@@ -469,10 +472,20 @@ $(document).ajaxComplete(FT.util.ajaxCompleteFn);
 
 // if logged in, go to the home
 rest.GET('/api/v1/status', function(session) {
+    var loggedIn = false;
     if (session.username) {
         FT.loggedUser(session.username);
         FT.loggedIsAdmin(session.is_admin);
-        FT.curPage('home');
+        loggedIn = true;
+    }
+    if (loggedIn) {
+        if (window.location.hash.length == 0) {
+            FT.curPage('home');
+        } else {
+            FT.curPage(window.location.hash.substring(2));
+        }
+    } else {
+        FT.curPage('login')
     }
 });
 
