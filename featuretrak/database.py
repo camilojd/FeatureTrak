@@ -91,7 +91,7 @@ class Feature(db.Model):
         row['id'] = self.id
         row['description'] = self.description
         row['is_public'] = self.is_public
-        row['target_date'] = self.target_date.strftime('%Y-%m-%d')
+        row['target_date'] = '' if self.target_date is None else self.target_date.strftime('%Y-%m-%d')
         row['title'] = self.title
         row['url'] = self.url
         row['area'] = self.area.name
