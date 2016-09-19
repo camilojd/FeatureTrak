@@ -33,15 +33,15 @@ def login():
         criteria['email'] = request.json['username']
     else:
         criteria['username'] = request.json['username']
-    user = User.query.filter_by(**criteria).first() 
-    if user is None:
-        return jsonify({'success': False,
-                        'msgText': 'Invalid credentials',
-                        'msgType': 'error'})
 
-    # any password is valid...
-    flask_login.login_user(user)
-    return jsonify({'success' : True, 'is_admin' : user.is_admin})
+    user = User.query.filter_by(**criteria).first() 
+
+    if user is not None and user.passwd == request.json['passwd']:
+        # not using bcrypt (yet)
+        flask_login.login_user(user)
+        return jsonify({'success' : True, 'is_admin' : user.is_admin})
+
+    return jsonify({'success': False, 'msgText': 'Invalid credentials', 'msgType': 'error'})
 
 @app.route('/api/v1/logout', methods=['POST'])
 @flask_login.login_required

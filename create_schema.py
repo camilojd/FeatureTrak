@@ -196,14 +196,14 @@ user_admin.username = 'admin'
 user_admin.full_name = 'Administrator'
 user_admin.is_admin = True
 user_admin.email = 'staff@britecore.com'
-user_admin.passwd = '$$'
+user_admin.passwd = 'britec0r3' #nope, not using bcrypt (yet)
 
 user_orion = User()
 user_orion.username = 'orion'
 user_orion.full_name = 'Somebody @ Orion Capital'
 user_orion.is_admin = False
 user_orion.email = 'ask@orion.ca'
-user_orion.passwd = '$$'
+user_orion.passwd = 'orion123'
 user_orion.client = client_orion
 
 user_sirius = User()
@@ -211,7 +211,7 @@ user_sirius.username = 'sirius'
 user_sirius.full_name = 'John Doe @ Sirius Life'
 user_sirius.is_admin = False
 user_sirius.email = 'sirius@li.fe'
-user_sirius.passwd = '$$'
+user_sirius.passwd = 'sirius123'
 user_sirius.client = client_sirius
 
 db.session.add(area_policies)

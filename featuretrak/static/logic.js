@@ -139,8 +139,6 @@ FT.login = {
                           FT.loggedUser(username);
                           FT.loggedIsAdmin(ret.is_admin);
                           FT.curPage('home');
-                      } else {
-                          // TODO message...
                       }
                   });
     }
