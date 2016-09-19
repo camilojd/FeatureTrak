@@ -49,11 +49,6 @@ def logout():
     flask_login.logout_user()
     return jsonify({'success' : True})
 
-@app.route('/whoami')
-@flask_login.login_required
-def whoami():
-    return flask_login.current_user.full_name
-
 # API views
 # Clients
 @app.route('/api/v1/admin/clients', methods=['GET'])
