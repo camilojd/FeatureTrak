@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, request, make_response
+from flask import render_template, jsonify, request, make_response, abort
 from database import app, db, User, Client, Area, Feature, Supporter
 from decimal import Decimal
 from sqlalchemy import and_, func
@@ -54,6 +54,9 @@ def logout():
 @app.route('/api/v1/admin/clients', methods=['GET'])
 @flask_login.login_required
 def client_list():
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     clients = [r.to_dict() for r in Client.query.all()]
 
     return jsonify(clients)
@@ -61,6 +64,9 @@ def client_list():
 @app.route('/api/v1/admin/client', methods=['POST'])
 @flask_login.login_required
 def client_create():
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     obj = Client()
     for k, v in request.json.iteritems():
         setattr(obj, k, v)
@@ -77,6 +83,9 @@ def client_create():
 @app.route('/api/v1/admin/client/<int:client_id>', methods=['GET', 'PUT', 'DELETE'])
 @flask_login.login_required
 def client_get_update_or_delete(client_id):
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     obj = Client.query.get_or_404(client_id)
     if request.method == 'GET':
         return jsonify(obj.to_dict())
@@ -108,6 +117,7 @@ def client_get_update_or_delete(client_id):
 @app.route('/api/v1/admin/areas', methods=['GET'])
 @flask_login.login_required
 def area_list():
+    # all users can query this
     areas = [make_sa_row_dict(r) for r in Area.query.all()]
 
     return jsonify(areas)
@@ -115,6 +125,9 @@ def area_list():
 @app.route('/api/v1/admin/area', methods=['POST'])
 @flask_login.login_required
 def area_create():
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     obj = Area()
     for k, v in request.json.iteritems():
         setattr(obj, k, v)
@@ -127,6 +140,9 @@ def area_create():
 @app.route('/api/v1/admin/area/<int:area_id>', methods=['GET', 'PUT', 'DELETE'])
 @flask_login.login_required
 def area_get_update_or_delete(area_id):
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     obj = Area.query.get_or_404(area_id)
     if request.method == 'GET':
         return jsonify(make_sa_row_dict(obj))
@@ -154,6 +170,9 @@ def area_get_update_or_delete(area_id):
 @app.route('/api/v1/admin/users', methods=['GET'])
 @flask_login.login_required
 def user_list():
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     users = []
     for user in User.query.all():
         d = make_sa_row_dict(user)
@@ -171,6 +190,9 @@ def user_list():
 @app.route('/api/v1/admin/user', methods=['POST'])
 @flask_login.login_required
 def user_create():
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     obj = User()
     for k, v in request.json.iteritems():
         setattr(obj, k, v)
@@ -187,6 +209,9 @@ def user_create():
 @app.route('/api/v1/admin/user/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
 @flask_login.login_required
 def user_get_update_or_delete(user_id):
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     obj = User.query.get_or_404(user_id)
     if request.method == 'GET':
         d = make_sa_row_dict(obj)
@@ -335,6 +360,9 @@ def feature_sort():
 @app.route('/api/v1/admin/features-global', methods=['GET'])
 @flask_login.login_required
 def features_global_list():
+    if not flask_login.current_user.is_admin:
+        abort(403)
+
     sql = '''
         select a.feature_id,
                sum(a.points) as rank
