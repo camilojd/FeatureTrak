@@ -18,14 +18,12 @@
       <div style="display:none" data-bind="visible: loggedUser() != ''">
         <a data-bind="click: curPage.bind(curPage, 'home')" class="navbar-brand" href="#">FeatureTrak</a>
       </div>
-      <!-- ko if: FT.loggedUser() != '' --> 
-      <div id="navbar">
+      <div style="display:none" data-bind="visible: loggedUser() != ''" id="navbar">
         <nav class="nav navbar-nav pull-xs-right">
           <div class="nav-item nav-link active">Logged in as <span data-bind="text: FT.loggedUser()"></span></div>
           <a data-bind="click:logout" class="nav-item nav-link" href="#">Logout</a>
         </nav>
       </div>
-      <!-- /ko -->
     </nav>
 
     <div class="container">
