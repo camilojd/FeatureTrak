@@ -1,3 +1,7 @@
+services:
+  - mysql
+before_script:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS featuretrak_test CHARACTER SET utf8 COLLATE utf8_general_ci'
 language: python
 python:
   - "2.7"

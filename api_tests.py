@@ -1,5 +1,5 @@
 from featuretrak import config
-config.database_uri = 'mysql://setec:astronomy@localhost/featuretrak_test'
+config.database_uri = 'mysql://travis:@localhost/featuretrak_test'
 
 from decimal import Decimal
 from featuretrak.views import app
