@@ -36,6 +36,12 @@ Clone the repo:
 git clone https://github.com/camilojd/featuretrak
 ```
 
+To compile MySQL support for Python, in Ubuntu you may need to install the following two packages:
+```
+sudo apt-get install libmysqlclient-dev
+sudo apt-get install python-dev
+```
+
 Inside the featuretrak folder, install pip requirements, create the database, load the initial data and launch the app:
 
 ```
