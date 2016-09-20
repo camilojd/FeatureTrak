@@ -15,9 +15,9 @@
       <!-- ko if: FT.loggedUser() == '' --> 
       <span class="navbar-brand">FeatureTrak</span>
       <!-- /ko -->
-      <!-- ko ifnot: FT.loggedUser() == '' --> 
-      <a data-bind="click: curPage.bind(curPage, 'home')" class="navbar-brand" href="#">FeatureTrak</a>
-      <!-- /ko -->
+      <div style="display:none" data-bind="visible: loggedUser() != ''">
+        <a data-bind="click: curPage.bind(curPage, 'home')" class="navbar-brand" href="#">FeatureTrak</a>
+      </div>
       <!-- ko if: FT.loggedUser() != '' --> 
       <div id="navbar">
         <nav class="nav navbar-nav pull-xs-right">
