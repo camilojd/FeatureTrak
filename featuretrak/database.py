@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 from flask_sqlalchemy import SQLAlchemy
 
 import flask_login
@@ -156,6 +156,10 @@ login_manager.init_app(app)
 def user_loader(user_id):
     user = User.query.get(int(user_id))
     return user
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return abort(403)
 
 @app.context_processor
 def misc_processor():
