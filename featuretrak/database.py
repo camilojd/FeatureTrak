@@ -1,6 +1,7 @@
 from flask import Flask, abort
 from flask_sqlalchemy import SQLAlchemy
 
+import config
 import flask_login
 import random
 import string
@@ -143,7 +144,7 @@ class Area(db.Model):
 
 app = Flask(__name__)
 # TODO load from external configuration file
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://enders:game@localhost/featuretrak'
+app.config['SQLALCHEMY_DATABASE_URI'] = config.database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.secret_key = 'gwlUJJIqOfTpxgTFl6eBAFg3ageatqYONx39SNruIXxkLuwPY56GuGgjKZx0'
