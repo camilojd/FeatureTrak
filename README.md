@@ -44,16 +44,25 @@ sudo apt-get install libmysqlclient-dev
 sudo apt-get install python-dev
 ```
 
-Inside the featuretrak folder, install pip requirements, create the database, load the initial data and launch the app:
+Inside the featuretrak folder, install pip requirements, create the database, load the initial data:
 
 ```
 pip install -r requirements.txt
 mysql -u root < create_database.sql
 python create_schema.py
+```
+
+To run the tests,
+```
+python api_tests.py
+```
+
+To start and access the app
+```
 python app.py
 ```
 
-Now point your browser to http://localhost:5000
+And point your browser to http://localhost:5000
  
 ### Some general concepts
 
