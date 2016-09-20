@@ -1,5 +1,7 @@
 # FeatureTrak
 
+[![Travis](https://img.shields.io/travis/camilojd/FeatureTrak.svg?maxAge=2592000?style=flat-square)]()
+
 A programming project for IWS based on https://github.com/IntuitiveWebSolutions/EngineeringMidLevel.
 
 This project uses all IWS stack, including:
