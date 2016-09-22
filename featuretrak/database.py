@@ -159,9 +159,3 @@ def user_loader(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return abort(403)
-
-@app.context_processor
-def misc_processor():
-    def random_string(chars):
-       return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(chars)) 
-    return dict(random_string=random_string)
