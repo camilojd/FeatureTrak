@@ -1,5 +1,5 @@
 from featuretrak import config
-config.database_uri = 'mysql://travis:@localhost/featuretrak_test'
+config.DATABASE_URI = 'mysql://travis:@localhost/featuretrak_test'
 
 from decimal import Decimal
 from featuretrak.views import app

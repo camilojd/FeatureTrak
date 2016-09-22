@@ -143,12 +143,10 @@ class Area(db.Model):
         return '<Area %r>' % self.name
 
 app = Flask(__name__)
-# TODO load from external configuration file
-app.config['SQLALCHEMY_DATABASE_URI'] = config.database_uri
+app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
-app.secret_key = 'gwlUJJIqOfTpxgTFl6eBAFg3ageatqYONx39SNruIXxkLuwPY56GuGgjKZx0'
-#app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+app.secret_key = config.FLASK_SECRET_KEY
 db.init_app(app)
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
