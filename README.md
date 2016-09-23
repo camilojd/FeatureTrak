@@ -52,6 +52,15 @@ mysql -u root < create_database.sql
 python create_schema.py
 ```
 
+Create a new file named `featuretrak/config_local.py` containing the production values for the configuration keys mentioned in `featuretrak/config.py`, such as:
+
+```
+DATABASE_URI = 'mysql://enders:game@localhost/featuretrak'
+GOOGLE_CLIENT_ID = 'The Google Client ID that was proportioned when registering the App @ Google'
+FLASK_SECRET_KEY = 'Some random string to secure Flask cookies'
+
+```
+
 To run the tests,
 ```
 python api_tests.py
