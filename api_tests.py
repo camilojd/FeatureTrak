@@ -1,5 +1,6 @@
 from featuretrak import config
 config.DATABASE_URI = 'mysql://travis:@localhost/featuretrak_test'
+config.FLASK_SECRET_KEY = 'SOMESECRETHERE1234567890_________'
 
 from decimal import Decimal
 from featuretrak.views import app
