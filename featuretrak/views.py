@@ -222,15 +222,19 @@ def user_get_update_or_delete(user_id):
 
     try:
         if request.method == 'PUT':
-            errs = obj.is_valid(request.json)
-            if len(errs) > 0:
-                return make_response(jsonify({'validationErrors' : errs}), 409)
-
             for k, v in request.json.iteritems():
                 if k == 'passwd' and v == 'NONMODIFIED':
                     # keep the password as it is
                     continue
                 setattr(obj, k, v)
+
+            if obj.is_admin:
+                # to match the UI
+                obj.client_id = None
+
+            errs = obj.is_valid(request.json)
+            if len(errs) > 0:
+                return make_response(jsonify({'validationErrors' : errs}), 409)
 
         else:
             db.session.delete(obj)
