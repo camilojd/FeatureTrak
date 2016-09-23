@@ -59,8 +59,9 @@
     <script type="text/html" id="ko_simpleGrid_pageLinks">
     {% include 'grid-pager.html' %}
     </script>
-    <script src="{{ url_for('static', filename='knockout.simpleGrid.3.0.js') }}"></script>
-    <script src="{{ url_for('static', filename='logic.js') }}"></script>
+    {% assets filters="jsmin", output="gen/logic.min.js", "knockout.simpleGrid.3.0.js", "logic.js" %}
+        <script src="{{ ASSET_URL }}"></script>
+    {% endassets %}
     <script src="https://apis.google.com/js/platform.js" async defer></script>
   </body>
 </html>

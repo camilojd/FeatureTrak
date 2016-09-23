@@ -93,3 +93,5 @@ bower_components/
 
 # configuration file overriding defaults
 config_local.py
+
+featuretrak/static/gen/

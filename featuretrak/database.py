@@ -2,6 +2,7 @@ from flask import Flask, abort
 from flask_sqlalchemy import SQLAlchemy
 
 import config
+import flask_assets
 import flask_login
 import random
 import string
@@ -153,6 +154,9 @@ app.secret_key = config.FLASK_SECRET_KEY
 db.init_app(app)
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
+
+assets = flask_assets.Environment()
+assets.init_app(app)
 
 @login_manager.user_loader
 def user_loader(user_id):
