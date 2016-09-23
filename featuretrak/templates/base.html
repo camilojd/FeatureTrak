@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="google-signin-client_id" content="{{ GOOGLE_CLIENT_ID }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='octicons/octicons.css') }}">
@@ -12,15 +13,15 @@
   </head>
   <body>
     <nav class="navbar navbar-dark navbar-fixed-top bg-inverse">
-      <!-- ko if: FT.loggedUser() == '' --> 
+      <!-- ko ifnot: login.state().is_enabled -->
       <span class="navbar-brand">FeatureTrak</span>
       <!-- /ko -->
-      <div style="display:none" data-bind="visible: loggedUser() != ''">
+      <div style="display:none" data-bind="visible: login.state().is_enabled">
         <a data-bind="click: curPage.bind(curPage, 'home')" class="navbar-brand" href="#">FeatureTrak</a>
       </div>
-      <div style="display:none" data-bind="visible: loggedUser() != ''" id="navbar">
+      <div style="display:none" data-bind="visible: login.state().is_enabled" id="navbar">
         <nav class="nav navbar-nav pull-xs-right">
-          <div class="nav-item nav-link active">Logged in as <span data-bind="text: FT.loggedUser()"></span></div>
+          <div class="nav-item nav-link active">Logged in as <span data-bind="text: login.state().full_name"></span></div>
           <a data-bind="click:logout" class="nav-item nav-link" href="#">Logout</a>
         </nav>
       </div>
@@ -43,6 +44,7 @@
         {% include 'admin.html' %}
         {% include 'features-client.html' %}
         {% include 'features-staff.html' %}
+        {% include 'choose-client.html' %}
       <div id="ft-growl-notifications"></div>
     </div>
     <script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
@@ -59,5 +61,6 @@
     </script>
     <script src="{{ url_for('static', filename='knockout.simpleGrid.3.0.js') }}"></script>
     <script src="{{ url_for('static', filename='logic.js') }}"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
   </body>
 </html>

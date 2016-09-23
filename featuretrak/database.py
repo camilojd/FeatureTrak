@@ -15,13 +15,15 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(60), nullable=False)
+    full_name = db.Column(db.String(80), nullable=False)
     username = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    passwd = db.Column(db.String(60), nullable=False)
+    passwd = db.Column(db.String(60))
     is_admin = db.Column(db.Boolean(), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'))
     client = db.relationship('Client')
+    google_id = db.Column(db.String(30), nullable=True)
+    is_enabled = db.Column(db.Boolean(), nullable=False)
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -30,12 +32,13 @@ class User(db.Model):
         ret = []
         # toy validation
         # First check key, then check key value
-        if 'username' in request:
-            if '@' in request['username']:
-                ret.append('The username cannot contain an "at" sign (@)')
-        if 'email' in request:
-            if not '@' in request['email']:
-                ret.append('The email address is invalid')
+        if self.google_id is None:
+            if 'username' in request:
+                if '@' in request['username']:
+                    ret.append('The username cannot contain an "at" sign (@)')
+            if 'email' in request:
+                if not '@' in request['email']:
+                    ret.append('The email address is invalid')
         if 'is_admin' in request:
             # admins don't belong to a client, non admins should always belong to one
             if request['is_admin'] is True:

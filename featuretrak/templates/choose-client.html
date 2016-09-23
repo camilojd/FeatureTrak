@@ -1,0 +1,20 @@
+<div class="row" style="display:none; " data-bind="visible: curPage() == 'userSignUp'">
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-8">
+    <h4>Choose the company you belong to.</h4>
+    <small>Once you confirm this, you will be able to use the application</small>
+    <form class="form-horizontal" onsubmit="return false">
+      <fieldset>
+        <div class="form-group row">
+          <div class="col-md-7">
+            <select data-bind="value: userSignUp.client_id, options: userSignUp.clientList, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Choose a company'" class="form-control"></select>
+          </div>
+        </div>
+      </fieldset>
+      <button class="btn btn-primary" data-bind="click: userSignUp._confirm">Confirm</button>
+    </form>
+  </div>
+  <div class="col-md-2">
+  </div>
+</div>

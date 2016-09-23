@@ -43,9 +43,12 @@ class FeatureTrakTestCase(unittest.TestCase):
             INSERT INTO `clients` VALUES (1,'Sirius Life',1.00),
                                          (2,'Orion Capital Inc.',1.00);
 
-            INSERT INTO `users`   VALUES (1,'Administrator','admin','staff@britecore.com','britec0r3',1,NULL), 
-                                         (2,'John Doe @ Sirius Life','sirius','talk@sirius.life','sirius123',0,1),
-                                         (3,'Somebody @ Orion Capital','orion','ask@orion.ca','orion123',0,2);
+            INSERT INTO `users`   VALUES (1,'Administrator','admin','staff@britecore.com','britec0r3',1,NULL,
+                                          NULL, 1),
+                                         (2,'John Doe @ Sirius Life','sirius','talk@sirius.life','sirius123',0,1,
+                                          NULL, 1),
+                                         (3,'Somebody @ Orion Capital','orion','ask@orion.ca','orion123',0,2,
+                                          NULL, 1);
         '''
         with app.app_context():
             db.create_all()
@@ -87,11 +90,11 @@ class FeatureTrakTestCase(unittest.TestCase):
         ret = self.app.get('/api/v1/features')
         self.assertEqual(ret.status_code, 200)
 
-        # but, admin URLS don't
-        # clients
+        # clients are accesible to all
         ret = self.app.get('/api/v1/admin/clients')
-        self.assertEqual(ret.status_code, 403)
+        self.assertEqual(ret.status_code, 200)
 
+        # but, other admin URLS are not
         ret = self.app.get('/api/v1/admin/client/1')
         self.assertEqual(ret.status_code, 403)
 
@@ -105,7 +108,7 @@ class FeatureTrakTestCase(unittest.TestCase):
         self.assertEqual(ret.status_code, 403)
 
         # areas
-        # Only exception, to create a feature, FT needs to know the areas
+        # to create a feature, FT needs to know the areas
         ret = self.app.get('/api/v1/admin/areas')
         self.assertEqual(ret.status_code, 200)
 

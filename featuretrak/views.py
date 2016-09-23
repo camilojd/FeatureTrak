@@ -2,6 +2,7 @@ from flask import render_template, jsonify, request, make_response, abort
 from database import app, db, User, Client, Area, Feature, Supporter
 from decimal import Decimal
 from sqlalchemy import and_, func
+import config
 import flask_login
 
 # helper
@@ -13,7 +14,8 @@ def make_sa_row_dict(obj):
 # main view
 @app.route('/')
 def index():
-    return render_template('base.html')
+    return render_template('base.html',
+                           GOOGLE_CLIENT_ID=config.GOOGLE_CLIENT_ID)
 
 @app.route('/api/v1/status')
 def status():
@@ -23,12 +25,15 @@ def status():
         status['username'] = user.username
         status['full_name'] = user.full_name
         status['is_admin'] = user.is_admin
+        status['is_enabled'] = user.is_enabled
+        status['client_id'] = user.client_id
+        status['success'] = True
 
     return jsonify(status)
 
 @app.route('/api/v1/login', methods=['POST'])
 def login():
-    criteria = {}
+    criteria = {'google_id' : None}
     if '@' in request.json['username']:
         criteria['email'] = request.json['username']
     else:
@@ -39,9 +44,66 @@ def login():
     if user is not None and user.passwd == request.json['passwd']:
         # not using bcrypt (yet)
         flask_login.login_user(user)
-        return jsonify({'success' : True, 'is_admin' : user.is_admin})
+        return jsonify({'success' : True, 'is_admin' : user.is_admin, 'client_id' : user.client_id,
+                        'full_name' : user.full_name, 'username' : user.username,
+                        'is_enabled' : user.is_enabled})
 
     return jsonify({'success': False, 'msgText': 'Invalid credentials', 'msgType': 'error'})
+
+@app.route('/api/v1/google-login', methods=['POST'])
+def google_login():
+    from oauth2client import client, crypt
+
+    try:
+        idinfo = client.verify_id_token(request.json['token'], config.GOOGLE_CLIENT_ID)
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise crypt.AppIdentityError("Wrong issuer.")
+    except crypt.AppIdentityError:
+        # Invalid token
+        return jsonify(dict(success=False))
+
+    userid = idinfo['sub']
+
+    user = User.query.filter(User.google_id == userid).first()
+
+    if user is None:
+        user = User()
+        user.username = 'goog_%s' % userid
+        user.full_name = idinfo['name']
+        user.email = idinfo['email']
+        user.google_id = userid
+        user.is_admin = False
+        user.is_enabled = False
+
+        db.session.add(user)
+        db.session.commit()
+
+    flask_login.login_user(user)
+
+    ret = {}
+    ret['success'] = True
+    ret['username'] = user.username
+    ret['full_name'] = user.full_name
+    ret['client_id'] = user.client_id
+    ret['is_admin'] = user.is_admin
+    ret['is_enabled'] = user.is_enabled
+
+    return jsonify(ret)
+
+@app.route('/api/v1/confirm-user-client', methods=['POST'])
+@flask_login.login_required
+def assign_user_client():
+    if flask_login.current_user.is_enabled:
+        # once assigned can't be reassigned
+        abort(400)
+
+    user = User.query.get(flask_login.current_user.id)
+    user.client_id = request.json['client_id']
+    user.is_enabled = True
+
+    db.session.commit()
+
+    return jsonify(dict(success=True))
 
 @app.route('/api/v1/logout', methods=['POST'])
 @flask_login.login_required
@@ -54,9 +116,6 @@ def logout():
 @app.route('/api/v1/admin/clients', methods=['GET'])
 @flask_login.login_required
 def client_list():
-    if not flask_login.current_user.is_admin:
-        abort(403)
-
     clients = [r.to_dict() for r in Client.query.all()]
 
     return jsonify(clients)
@@ -201,6 +260,9 @@ def user_create():
     if len(errs) > 0:
         return make_response(jsonify({'validationErrors' : errs}), 409)
 
+    # users created by API/Web UI are enabled by default
+    obj.is_enabled = True
+
     db.session.add(obj)
     db.session.commit()
 
@@ -253,6 +315,9 @@ def user_get_update_or_delete(user_id):
 @app.route('/api/v1/features', methods=['GET'])
 @flask_login.login_required
 def feature_list():
+    if not flask_login.current_user.is_enabled:
+        abort(403)
+
     user = flask_login.current_user
 
     own_features = []
@@ -279,6 +344,9 @@ def feature_list():
 @app.route('/api/v1/feature', methods=['POST'])
 @flask_login.login_required
 def feature_create():
+    if not flask_login.current_user.is_enabled:
+        abort(403)
+
     obj = Feature()
     for k, v in request.json.iteritems():
         setattr(obj, k, v)
@@ -306,6 +374,9 @@ def feature_create():
 @app.route('/api/v1/feature/<int:feature_id>', methods=['GET', 'PUT', 'DELETE'])
 @flask_login.login_required
 def feature_get_update_or_delete(feature_id):
+    if not flask_login.current_user.is_enabled:
+        abort(403)
+
     obj = Feature.query.get_or_404(feature_id)
     if request.method == 'GET':
         return jsonify(obj.to_dict())
@@ -343,6 +414,9 @@ def feature_get_update_or_delete(feature_id):
 @app.route('/api/v1/sort-features', methods=['POST'])
 @flask_login.login_required
 def feature_sort():
+    if not flask_login.current_user.is_enabled:
+        abort(403)
+
     # TODO validate that only public features or features belonging
     # to this user can be sorted
     user = flask_login.current_user

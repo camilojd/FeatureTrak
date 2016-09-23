@@ -118,10 +118,10 @@ FT.pages = {
 FT.logout = function() {
     rest.POST('/api/v1/logout', '')
     .then(function() {
+        onGoogleSignOut();
         $('#loginEmail').val('');
         $('#loginPassword').val('');
-        FT.loggedUser('');
-        FT.loggedIsAdmin(false);
+        FT.login.state({});
         FT.breadcrumb([]);
         FT.curPage('login');
         $('#loginEmail').focus();
@@ -129,23 +129,20 @@ FT.logout = function() {
 }
 
 FT.login = {
-    message : ko.observable(''),
     click : function() {
         var username = $('#loginEmail').val();
         var passwd = $('#loginPassword').val();
         rest.POST('/api/v1/login', { username: username, passwd: passwd },
                   function(ret) {
                       if (ret.success) {
-                          FT.loggedUser(username);
-                          FT.loggedIsAdmin(ret.is_admin);
+                          FT.login.state(ret);
                           FT.curPage('home');
                       }
                   });
-    }
+    },
+    state: ko.observable({})
 }
 
-FT.loggedUser = ko.observable('');
-FT.loggedIsAdmin = ko.observable();
 FT.breadcrumb = ko.observableArray([]);
 
 FT.util = {
@@ -419,9 +416,57 @@ FT.featuresStaff = {
     }
 }
 
+FT.userSignUp = {
+    clientList: ko.observableArray([]),
+    client_id: ko.observable(0),
+    queryClients: function() {
+        rest.GET('/api/v1/admin/clients', function(data) {
+            FT.userSignUp.clientList(data);
+        });
+    },
+    _confirm: function() {
+        var client_id = FT.userSignUp.client_id();
+
+        if (!client_id) {
+            alert('You must choose a company to continue');
+            return;
+        }
+
+        rest.POST('/api/v1/confirm-user-client', {client_id : client_id}, function(ret) {
+            if (ret.success) {
+                rest.GET('/api/v1/status', function(_status) {
+                    if (_status.success) {
+                        FT.login.state(_status);
+                        FT.curPage('home');
+                    }
+                });
+            }
+        });
+    }
+}
+
+function onGoogleSignIn(googleUser) {
+    var id_token = googleUser.getAuthResponse().id_token;
+    rest.POST('/api/v1/google-login', { token: id_token }, function(_status) {
+        if (_status.success) {
+            FT.login.state(_status);
+            if (!_status.is_enabled) {
+                FT.curPage('userSignUp');
+                return;
+            }
+            FT.curPage('home');
+        }
+    });
+}
+
+function onGoogleSignOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut();
+}
+
 ko.applyBindings(FT);
 FT.curPage.subscribe(function(val) {
-    if (val != 'login') {
+    if (val != 'login' && val != 'userSignUp') {
         var breadcrumb = FT.breadcrumb();
 
         if (breadcrumb.length == 3) {
@@ -439,6 +484,8 @@ FT.curPage.subscribe(function(val) {
         FT.featuresClient.query();
     } else if (val == 'featuresStaff') {
         FT.featuresStaff.query();
+    } else if (val == 'userSignUp') {
+        FT.userSignUp.queryClients();
     }
 
     // scroll to top
@@ -468,15 +515,15 @@ FT.admin.user.is_admin.subscribe(function(newVal) {
 $(document).ajaxError(FT.util.ajaxFailFn);
 $(document).ajaxComplete(FT.util.ajaxCompleteFn);
 
-// if logged in, go to the home
-rest.GET('/api/v1/status', function(session) {
-    var loggedIn = false;
-    if (session.username) {
-        FT.loggedUser(session.username);
-        FT.loggedIsAdmin(session.is_admin);
-        loggedIn = true;
-    }
-    if (loggedIn) {
+// setup UI according to session
+rest.GET('/api/v1/status', function(_status) {
+    if (_status.success) {
+        FT.login.state(_status);
+        if (!_status.is_enabled) {
+            FT.curPage('userSignUp');
+            return;
+        }
+
         if (window.location.hash.length == 0) {
             FT.curPage('home');
         } else {
