@@ -4,6 +4,8 @@
 
 A programming project for IWS based on https://github.com/IntuitiveWebSolutions/EngineeringMidLevel.
 
+Live instance at: http://featuretraklive.us-west-2.elasticbeanstalk.com
+
 This project uses all IWS stack, including:
 
  * Python 2.7
