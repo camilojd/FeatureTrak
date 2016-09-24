@@ -454,7 +454,14 @@ function onGoogleSignIn(googleUser) {
                 FT.curPage('userSignUp');
                 return;
             }
-            FT.curPage('home');
+
+            var hash = window.location.hash;
+            if (hash.length == 0 || hash == '#/login') {
+                // reload with no hash, or successful login
+                FT.curPage('home');
+            } else {
+                FT.curPage(hash.substring(2));
+            }
         }
     });
 }
