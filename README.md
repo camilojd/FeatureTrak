@@ -69,7 +69,7 @@ To load the initial data, and start/access the app
 ```
 export FEATURETRAK_CONFIG=production.py
 python create_initial_data.py
-python app.py
+python application.py
 ```
 
 And point your browser to http://localhost:5000
