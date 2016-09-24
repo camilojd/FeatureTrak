@@ -1,5 +1,3 @@
-import os
-
 from decimal import Decimal
 from featuretrak import app, db
 from flask import json as JSON
