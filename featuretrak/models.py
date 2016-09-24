@@ -1,17 +1,6 @@
-from flask import Flask, abort
 from flask_sqlalchemy import SQLAlchemy
 
-import config
-import flask_assets
-import flask_login
-import random
-import string
-
 db = SQLAlchemy()
-
-#######################################
-# SQLAlchemy models
-#######################################
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -145,24 +134,3 @@ class Area(db.Model):
 
     def __repr__(self):
         return '<Area %r>' % self.name
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SESSION_TYPE'] = 'filesystem'
-app.secret_key = config.FLASK_SECRET_KEY
-db.init_app(app)
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
-
-assets = flask_assets.Environment()
-assets.init_app(app)
-
-@login_manager.user_loader
-def user_loader(user_id):
-    user = User.query.get(int(user_id))
-    return user
-
-@login_manager.unauthorized_handler
-def unauthorized():
-    return abort(403)

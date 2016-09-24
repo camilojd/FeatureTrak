@@ -1,5 +1,12 @@
-from featuretrak.database import app, db, User, Feature, Client, Area, Supporter
+from featuretrak import app, db
+from featuretrak.models import User, Feature, Client, Area, Supporter
 import datetime as dt
+import os
+import sys
+
+if not os.environ.has_key('FEATURETRAK_CONFIG'):
+    print "The environment var FEATURETRAK_CONFIG needs to be set to populate the database"
+    sys.exit(1)
 
 app.app_context().push()
 db.drop_all()

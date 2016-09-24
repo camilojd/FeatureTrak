@@ -1,10 +1,7 @@
-from featuretrak import config
-config.DATABASE_URI = 'mysql://travis:@localhost/featuretrak_test'
-config.FLASK_SECRET_KEY = 'SOMESECRETHERE1234567890_________'
+import os
 
 from decimal import Decimal
-from featuretrak.views import app
-from featuretrak.database import db
+from featuretrak import app, db
 from flask import json as JSON
 
 # do some randomized testing

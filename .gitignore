@@ -91,7 +91,5 @@ ENV/
 # Additional stuff beyond github's .gitignore
 bower_components/
 
-# configuration file overriding defaults
-config_local.py
-
+# webassets generated js
 featuretrak/static/gen/

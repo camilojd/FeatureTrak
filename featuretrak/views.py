@@ -1,8 +1,8 @@
+from featuretrak import app
 from flask import render_template, jsonify, request, make_response, abort
-from database import app, db, User, Client, Area, Feature, Supporter
+from models import db, User, Client, Area, Feature, Supporter
 from decimal import Decimal
 from sqlalchemy import and_, func
-import config
 import flask_login
 
 # helper
@@ -15,7 +15,7 @@ def make_sa_row_dict(obj):
 @app.route('/')
 def index():
     return render_template('base.html',
-                           GOOGLE_CLIENT_ID=config.GOOGLE_CLIENT_ID)
+                           GOOGLE_CLIENT_ID=app.config['GOOGLE_CLIENT_ID'])
 
 @app.route('/api/v1/status')
 def status():
@@ -55,7 +55,7 @@ def google_login():
     from oauth2client import client, crypt
 
     try:
-        idinfo = client.verify_id_token(request.json['token'], config.GOOGLE_CLIENT_ID)
+        idinfo = client.verify_id_token(request.json['token'], app.config['GOOGLE_CLIENT_ID'])
         if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
             raise crypt.AppIdentityError("Wrong issuer.")
     except crypt.AppIdentityError:

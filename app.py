@@ -1,5 +1,4 @@
-from featuretrak.views import app
-from featuretrak import config
+from featuretrak import app
 
 if __name__ == "__main__":
-    app.run(debug=config.DEBUG)
+    app.run()
