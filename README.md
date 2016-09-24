@@ -29,7 +29,7 @@ Install MySQL:
 
 ```
 (Fedora) sudo dnf install mariadb-server
-(Ubuntu) sudo dnf apt-get install mysql-server
+(Ubuntu) sudo apt-get install mysql-server
 ```
 
 Clone the repo: 
