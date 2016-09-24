@@ -9,7 +9,7 @@ app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('featuretrak.default_settings')
 
 if os.environ.has_key('FEATURETRAK_CONFIG'):
-    app.config.from_pyfile(os.environ['FEATURETRAK_CONFIG'])
+    app.config.from_envvar('FEATURETRAK_CONFIG')
 
 db.init_app(app)
 

@@ -35,7 +35,7 @@ Install MySQL:
 Clone the repo: 
 
 ```
-git clone https://github.com/camilojd/featuretrak
+git clone https://github.com/camilojd/FeatureTrak
 ```
 
 To compile MySQL support for Python, in Ubuntu you may need to install the following two packages:
@@ -57,7 +57,6 @@ Create a new file named `instance/production.py` containing the production value
 SQLALCHEMY_DATABASE_URI = 'mysql://enders:game@localhost/featuretrak'
 GOOGLE_CLIENT_ID = 'The Google Client ID that was proportioned when registering the App @ Google'
 SECRET_KEY = 'Some random string to secure Flask cookies'
-
 ```
 
 To run the tests,
@@ -67,7 +66,7 @@ python api_tests.py
 
 To load the initial data, and start/access the app
 ```
-export FEATURETRAK_CONFIG=production.py
+export FEATURETRAK_CONFIG=/full/path/to/FeatureTrak/instance/production.py
 python create_initial_data.py
 python application.py
 ```
