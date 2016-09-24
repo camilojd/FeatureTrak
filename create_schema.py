@@ -203,7 +203,7 @@ user_admin.username = 'admin'
 user_admin.full_name = 'Administrator'
 user_admin.is_admin = True
 user_admin.email = 'staff@britecore.com'
-user_admin.passwd = 'britec0r3' #nope, not using bcrypt (yet)
+user_admin.passwd = 'britecore' #nope, not using bcrypt (yet)
 user_admin.is_enabled = True
 
 user_orion = User()

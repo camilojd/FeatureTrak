@@ -21,7 +21,7 @@ class FeatureTrakTestCase(unittest.TestCase):
         return self.login_as('orion', 'orion123')
 
     def login_as_admin(self):
-        return self.login_as('admin', 'britec0r3')
+        return self.login_as('admin', 'britecore')
 
     def login_as(self, username, passwd):
         return self.json_post('/api/v1/login', dict(username=username, passwd=passwd))
@@ -39,7 +39,7 @@ class FeatureTrakTestCase(unittest.TestCase):
             INSERT INTO `clients` VALUES (1,'Sirius Life',1.00),
                                          (2,'Orion Capital Inc.',1.00);
 
-            INSERT INTO `users`   VALUES (1,'Administrator','admin','staff@britecore.com','britec0r3',1,NULL,
+            INSERT INTO `users`   VALUES (1,'Administrator','admin','staff@britecore.com','britecore',1,NULL,
                                           NULL, 1),
                                          (2,'John Doe @ Sirius Life','sirius','talk@sirius.life','sirius123',0,1,
                                           NULL, 1),
