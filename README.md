@@ -44,12 +44,11 @@ sudo apt-get install libmysqlclient-dev
 sudo apt-get install python-dev
 ```
 
-Inside the featuretrak folder, install pip requirements, create the database, load the initial data:
+Inside the featuretrak folder, install pip requirements, create the database:
 
 ```
 pip install -r requirements.txt
 mysql -u root < create_database.sql
-python create_schema.py
 ```
 
 Create a new file named `instance/production.py` containing the production values for the configuration keys mentioned in `featuretrak/default_settings.py`, such as:
@@ -66,9 +65,10 @@ To run the tests,
 python api_tests.py
 ```
 
-To start and access the app
+To load the initial data, and start/access the app
 ```
 export FEATURETRAK_CONFIG=production.py
+python create_initial_data.py
 python app.py
 ```
 
