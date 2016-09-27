@@ -101,7 +101,9 @@ FT.showAlert = function(_alert) {
         var query = $('#ft-growl-notifications div[data-aid=' + time + ']');
         if (query.length) {
             // could have been dismissed
-            $(query).fadeOut();
+            $(query).fadeOut(300, function() {
+                $(this).remove();
+            });
         }
     }, _alert.timeout || 5000);
 }
