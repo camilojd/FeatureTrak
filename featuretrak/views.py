@@ -369,7 +369,7 @@ def feature_create():
 
     db.session.commit()
 
-    return jsonify({'id': obj.id})
+    return jsonify({'id': obj.id, 'msgType': 'info', 'msgText': 'Feature created'})
 
 @app.route('/api/v1/feature/<int:feature_id>', methods=['GET', 'PUT', 'DELETE'])
 @flask_login.login_required
@@ -432,7 +432,7 @@ def feature_sort():
 
     db.session.commit()
 
-    return jsonify({'ret' : True})
+    return jsonify({'ret' : True, 'msgType' : 'info', 'msgText': 'Priority order updated'})
 
 
 @app.route('/api/v1/admin/features-global', methods=['GET'])
