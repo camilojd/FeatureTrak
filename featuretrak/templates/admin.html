@@ -1,19 +1,19 @@
 <!-- multiple grids are hackish, alright. Doing it well will require refactoring the grid component -->
-<div class="row" style="display:none" data-bind="visible: curPage() == 'adminClient'">
+<div id="adminClientUi" class="row" style="display:none" data-bind="visible: curPage() == 'adminClient'">
   <h3>Client Management</h3>
   <div data-bind="simpleGrid: admin.clientGrid.vm">
   </div>
   <button class="btn btn-secondary" data-bind="click: admin.showAdd "><span class="octicon octicon-plus"></span>&nbsp;Add new</button>
 </div>
 
-<div class="row" style="display:none" data-bind="visible: curPage() == 'adminArea'">
+<div id="adminAreaUi" class="row" style="display:none" data-bind="visible: curPage() == 'adminArea'">
   <h3>Area Management</h3>
   <div data-bind="simpleGrid: admin.areaGrid.vm">
   </div>
   <button class="btn btn-secondary" data-bind="click: admin.showAdd "><span class="octicon octicon-plus"></span>&nbsp;Add new</button>
 </div>
 
-<div class="row" style="display:none" data-bind="visible: curPage() == 'adminUser'">
+<div id="adminUserUi" class="row" style="display:none" data-bind="visible: curPage() == 'adminUser'">
   <h3>User Management</h3>
   <div data-bind="simpleGrid: admin.userGrid.vm">
   </div>
