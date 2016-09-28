@@ -1,7 +1,7 @@
 <!-- ko if: login.state().is_admin -->
 <div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
   <div class="col-xs-4">
-    <div class="card">
+    <div data-card="adminClient" class="card">
       <img class="card-img-top w-100" src="https://placeimg.com/300/200/nature">
       <div class="card-block">
         <h4 class="card-title">Manage Clients</h4>
@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="col-xs-4">
-    <div class="card">
+    <div data-card="adminArea" class="card">
       <img class="card-img-top w-100" src="https://placeimg.com/300/200/nature">
       <div class="card-block">
         <h4 class="card-title">Manage Areas</h4>
@@ -21,7 +21,7 @@
     </div>
   </div>
   <div class="col-xs-4">
-    <div class="card">
+    <div data-card="adminUser" class="card">
       <img class="card-img-top w-100" src="https://placeimg.com/300/200/nature">
       <div class="card-block">
         <h4 class="card-title">Manage Users</h4>
@@ -33,7 +33,7 @@
 </div>
 <div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
   <div class="col-xs-4">
-    <div class="card">
+    <div data-card="featuresStaff" class="card">
       <img class="card-img-top w-100" src="https://placeimg.com/300/200/nature">
       <div class="card-block">
         <h4 class="card-title">Features List</h4>
@@ -47,7 +47,7 @@
 <!-- ko ifnot: login.state().is_admin -->
 <div class="row" style="display:none" data-bind="visible: curPage() == 'home'">
   <div class="col-xs-4">
-    <div class="card">
+    <div data-card="featuresClient" class="card">
       <img class="card-img-top w-100" src="https://placeimg.com/300/200/nature">
       <div class="card-block">
         <h4 class="card-title">Propose Features</h4>
