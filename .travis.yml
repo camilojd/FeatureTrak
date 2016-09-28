@@ -1,5 +1,7 @@
 services:
   - mysql
+addons:
+  firefox: "47.0.1"
 before_script:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS featuretrak_test CHARACTER SET utf8 COLLATE utf8_general_ci'
 language: python
@@ -9,6 +11,6 @@ install: "pip install -r dev_requirements.txt"
 script:
   - "python api_tests.py"
   - "python create_initial_data.py"
-  - "nohup python application.py &"
-  - "sleep 3"
+  - "python application.py &"
+  - "sleep 2"
   - "python gui_tests.py"
