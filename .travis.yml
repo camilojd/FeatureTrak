@@ -11,4 +11,5 @@ install: "pip install -r dev_requirements.txt"
 script:
   - "python api_tests.py"
   - "python create_initial_data.py"
+  - "nohup python application.py &"
   - "python gui_tests.py"
