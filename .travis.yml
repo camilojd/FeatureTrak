@@ -1,7 +1,7 @@
 services:
   - mysql
 addons:
-  firefox: "48.0.1"
+  firefox: "latest-esr"
 before_script:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS featuretrak_test CHARACTER SET utf8 COLLATE utf8_general_ci'
 language: python
