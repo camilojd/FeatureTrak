@@ -12,4 +12,5 @@ script:
   - "python api_tests.py"
   - "python create_initial_data.py"
   - "nohup python application.py &"
+  - "sleep 3"
   - "python gui_tests.py"
