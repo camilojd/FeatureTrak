@@ -69,7 +69,7 @@ class Test(unittest.TestCase):
         self.assert_text_in_elements('#adminClientUi td', '2.42')
 
         # logout
-        self.wt.click('a.nav-item')
+        self.wt.click('#lnkLogout')
         self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
 
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
         self.assert_text_in_elements('#ft-features-sortable', 'A crazy feature')
 
         # logout
-        self.wt.click('a.nav-item')
+        self.wt.click('#lnkLogout')
         self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
 
@@ -123,7 +123,7 @@ class Test(unittest.TestCase):
         self.assert_text_in_elements('.ft-features-list', 'A crazy feature')
 
         # logout
-        self.wt.click('a.nav-item')
+        self.wt.click('#lnkLogout')
         self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
 

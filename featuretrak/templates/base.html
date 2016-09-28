@@ -22,7 +22,7 @@
       <div style="display:none" data-bind="visible: login.state().is_enabled" id="navbar">
         <nav class="nav navbar-nav pull-xs-right">
           <div class="nav-item nav-link active">Logged in as <span data-bind="text: login.state().full_name"></span></div>
-          <a data-bind="click:logout" class="nav-item nav-link" href="#">Logout</a>
+          <a id="lnkLogout" data-bind="click:logout" class="nav-item nav-link" href="#">Logout</a>
         </nav>
       </div>
     </nav>
