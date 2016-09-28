@@ -16,8 +16,9 @@ before_script:
   - mysql -u root -e "GRANT ALL PRIVILEGES ON featuretrak_test.* To 'travis'@'localhost' IDENTIFIED BY ''"
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - sleep 3
-  - sudo wget https://chromedriver.storage.googleapis.com/2.24/chromedriver_linux64.zip -P /usr/local/bin
+  - wget https://chromedriver.storage.googleapis.com/2.24/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip -d /tmp
+  - export PATH=$PATH:/tmp
 language: python
 python:
   - "2.7"
