@@ -9,7 +9,7 @@ class Test(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.wt = WebTester(driver='Firefox', xvfb=False)
+        cls.wt = WebTester(xvfb=False)
         cls.wt.start()
 
     @classmethod
