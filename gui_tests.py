@@ -19,6 +19,7 @@ class Test(unittest.TestCase):
     def test_login_invalid_shows_notification(self):
         self.wt.go('http://localhost:5000/')
 
+        self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
         self.wt.set_value('#loginEmail', 'admin')
         self.wt.set_value('#loginPassword', 'secret')
@@ -33,6 +34,7 @@ class Test(unittest.TestCase):
     def test_admin_actions(self):
         self.wt.go('http://localhost:5000/')
 
+        self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
         self.wt.set_value('#loginEmail', 'admin')
         self.wt.set_value('#loginPassword', 'britecore')
@@ -68,12 +70,13 @@ class Test(unittest.TestCase):
 
         # logout
         self.wt.click('#lnkLogout')
-        self.wt.wait(1)
+        self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
 
     def test_user_create_feature_and_admin_verify(self):
         self.wt.go('http://localhost:5000/')
 
+        self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
         self.wt.set_value('#loginEmail', 'sirius')
         self.wt.set_value('#loginPassword', 'sirius')
@@ -104,10 +107,11 @@ class Test(unittest.TestCase):
 
         # logout
         self.wt.click('#lnkLogout')
-        self.wt.wait(1)
+        self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
 
         # see feature as admin
+        self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
         self.wt.set_value('#loginEmail', 'admin')
         self.wt.set_value('#loginPassword', 'britecore')
@@ -120,7 +124,7 @@ class Test(unittest.TestCase):
 
         # logout
         self.wt.click('#lnkLogout')
-        self.wt.wait(1)
+        self.wt.wait_for_visible('#loginEmail')
         self.wt.assert_url('http://localhost:5000/#/login')
 
 if __name__ == '__main__':
